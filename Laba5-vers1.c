@@ -10,18 +10,6 @@ typedef struct
 	int Size;
 } WordArray;
 
-void ExpandString(string *Strin, int NewSize)
-{
-	if (NewSize > 0 && Strin == NULL){
-		*Strin = (string)realloc(Strin, NewSize*sizeof(char));
-		Strin[0] = '\0';
-	}
-	else if (NewSize > 0)
-		*Strin = (string)realloc(Strin, NewSize*sizeof(char));
-	else
-		free(Strin);
-}
-
 void AddWords(WordArray *WordArr, int Count, int size)
 {
 	int i = 0;
@@ -31,11 +19,6 @@ void AddWords(WordArray *WordArr, int Count, int size)
 		(WordArr->Adres)[rsize + i] = (string)malloc(size*sizeof(char));
 	}
 	WordArr->Size += Count;
-}
-
-void AddSymb(string String, int Ind, char c)
-{
-	String[Ind] = c;
 }
 
 int EnterString(string* Strin)
