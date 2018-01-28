@@ -2,43 +2,46 @@
 #include <malloc.h>
 
 typedef char* string;
+typedef string* stringarr;
 
 typedef struct
 {
-	string Array;
+	stringarr Adres;
 	int Size;
-} Str;
-
-typedef struct
-{
-	string* Array;
-	int Size;
-	int CurrInd;
 } WordArray;
 
-
-void ExpWordArray(string** Adres, int* CurrSize)
+void ExpandString(string *Strin, int NewSize)
 {
-	*Adres = (string*)realloc(*Adres, (*CurrSize + 1)*sizeof(string));
-	*CurrSize += 1;
+	if (NewSize > 0 && Strin == NULL){
+		*Strin = (string)realloc(Strin, NewSize*sizeof(char));
+		Strin[0] = '\0';
+	}
+	else if (NewSize > 0)
+		*Strin = (string)realloc(Strin, NewSize*sizeof(char));
+	else
+		free(Strin);
 }
 
-void AddToWord(string* word, int Ind, char c)
+void AddWords(WordArray *WordArr, int Count, int size)
 {
-	
+	int i = 0;
+	int rsize = WordArr->Size;
+	WordArr->Adres = (stringarr)realloc(WordArr->Adres, (rsize + Count)*sizeof(string));
+	for (i = 0; i < Count; i++){
+		(WordArr->Adres)[rsize + i] = (string)malloc(size*sizeof(char));
+	}
+	WordArr->Size += Count;
 }
 
-void AddSymb(string* Adres, int* CurrSize, char c)
+void AddSymb(string String, int Ind, char c)
 {
-	*CurrSize += 1;
-	*Adres = (string)realloc(*Adres, (*CurrSize)*sizeof(char));
-	(*Adres)[*CurrSize - 1] = c;
+	String[Ind] = c;
 }
 
-void EnterString(Str* Strin, WordArray* WordArr)
+int EnterString(string* Strin)
 {
 	char c;
-	int flag = 0;
+	int flag = 0, i = 0, count = 0;
 	
 	do
 	{
@@ -46,43 +49,102 @@ void EnterString(Str* Strin, WordArray* WordArr)
 		if (c != ' ' && flag == 0)
 		{
 			flag = 1;
-			AddSymb(&(Strin->Array), &(Strin->Size), c);
-			ExpWordArray(&(WordArr->Array), &(WordArr->Size));
-			WordArr->CurrInd = 0;
-			AddSymb(&(WordArr->Array[WordArr->Size - 1]), &(WordArr->CurrInd), c);
+			(*Strin)[i++] = c;
+			count += 1;
 		}
 		else if (c == ' ' && flag == 1)
 		{
 			flag = 0;
-			AddSymb(&(Strin->Array), &(Strin->Size), c);
+			(*Strin)[i++] = c;
 		}
 		else
 		{
-			AddSymb(&(Strin->Array), &(Strin->Size), c);
+			(*Strin)[i++] = c;
 		}
 
 	} while (c != '.');
+
+	(*Strin)[i] = '\0';
+
+	return count; // количество слов
 }
 
-void PrintString(Str string)
+void FillArray(WordArray *WordArr, string *Strin)
+{
+	char c;
+	int WorCount, flag = 0, i = 0, j = 0, k = 0;
+	*Strin = (string)realloc(*Strin, 1000 * sizeof(char));
+	WorCount = EnterString(Strin);
+	AddWords(WordArr, WorCount, 31);
+
+	while ((*Strin)[i] != '.')
+	{
+		c = (*Strin)[i];
+		if (c != ' ' && flag == 0)
+		{
+			j = 0;
+			(WordArr->Adres)[k][j] = c;
+			j++;
+			i++;
+		}
+		else if (c == ' ' && flag == 1)
+		{
+			flag = 0;
+			(WordArr->Adres)[k][j] = '\0';
+			k++;
+			i++;
+		}
+		else if (c != ' ')
+		{
+			(WordArr->Adres)[k][j] = c;
+			j++;
+			i++;
+		}
+		else
+			i++;
+	}
+
+
+}
+
+void PrintString(string Strin)
 {
 	int i = 0;
-	printf("\nSize of string = %d\nString: ", string.Size);
-	for (; i < string.Size; i++)
-		printf("%c", string.Array[i]);
+	printf("\nString: ");
+	for (; Strin[i] != '\0'; i++)
+		printf("%c", Strin[i]);
 	printf("\n");
+}
+
+void PrintArray(WordArray WA)
+{
+	int i = 0;
+	for (; i < WA.Size; i++)
+		PrintString((WA.Adres)[i]);
+}
+
+void Free(WordArray *WA, string *Str)
+{
+	int i = 0;
+	for (; i < WA->Size; i++)
+		free(WA->Adres[i]);
+	free(WA->Adres);
+	free(*Str);
 }
 
 
 
 int main()
 {
-	Str String = { NULL, 0 };
-	WordArray WordArr = { NULL, 0, 0 };
+	string Strin = NULL;
+	WordArray WordArr = { NULL, 0 };
+	
 
-	EnterString(&String, &WordArr);
-	PrintString(String);
+	FillArray(&WordArr, &Strin);
+	PrintString(Strin);
+	PrintArray(WordArr);
 
+	Free(&WordArr, &Strin);
 
 	return 0;
 }
