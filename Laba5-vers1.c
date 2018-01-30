@@ -25,7 +25,7 @@ int EnterString(string* Strin)
 {
 	char c;
 	int flag = 0, i = 0, count = 0;
-	
+
 	do
 	{
 		c = getchar();
@@ -65,6 +65,7 @@ void FillArray(WordArray *WordArr, string *Strin)
 		c = (*Strin)[i];
 		if (c != ' ' && flag == 0)
 		{
+			flag = 1;
 			j = 0;
 			(WordArr->Adres)[k][j] = c;
 			j++;
@@ -86,8 +87,7 @@ void FillArray(WordArray *WordArr, string *Strin)
 		else
 			i++;
 	}
-
-
+	(WordArr->Adres)[k][j] = '\0';
 }
 
 void PrintString(string Strin)
@@ -121,7 +121,7 @@ int main()
 {
 	string Strin = NULL;
 	WordArray WordArr = { NULL, 0 };
-	
+
 
 	FillArray(&WordArr, &Strin);
 	PrintString(Strin);
