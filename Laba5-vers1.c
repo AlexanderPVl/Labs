@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <malloc.h>
+#include <string.h>
 
 typedef char* string;
 typedef string* stringarr;
@@ -106,6 +107,31 @@ void PrintArray(WordArray WA)
 		PrintString((WA.Adres)[i]);
 }
 
+void DeleteNums(string *Array)
+{
+	int len = 4;
+	int j, i;
+	char c = Array[0][1];
+	for (j = len; j >= 0; j--)
+	{
+		if ((int)Array[0][j] - (int)'0' <= 9 && (int)Array[0][j] - (int)'0' >= 0)
+		{
+			for (i = j + 1; Array[0][i] != '\0'; i++)
+				(*str)[i - 1] = Array[0][i];
+			(*str)[i - 1] = '\0';
+		}
+	}
+}
+
+int Task(WordArray *WA)
+{
+	int size = WA->Size, i = 0;
+	if (strcmp(WA->Adres[size - 1], WA->Adres[i]) == 0)
+	{
+		DeleteNums(WA->Adres[i]);
+	}
+}
+
 void Free(WordArray *WA, string *Str)
 {
 	int i = 0;
@@ -125,6 +151,7 @@ int main()
 
 	FillArray(&WordArr, &Strin);
 	PrintString(Strin);
+	Task(&WordArr);
 	PrintArray(WordArr);
 
 	Free(&WordArr, &Strin);
