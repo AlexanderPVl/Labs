@@ -15,7 +15,7 @@ int Calc(signed short int x, signed char y, signed char z)
 		cbw; // расширяем al в ax
 		sub al, 3; // вычитаем 3 из al (z-3)
 		mov bx, x // переносим x в bx
-		imul bx; // умножаем ax на bx ((z-3) * x)
+			imul bx; // умножаем ax на bx ((z-3) * x)
 		add ax, 1; //  прибавляем 1 к ax ()
 		adc dx, 0; // прибавляем к dx флаг переноса
 		mov bx, ax; // переносим ax в bx
@@ -23,15 +23,13 @@ int Calc(signed short int x, signed char y, signed char z)
 		cbw; // расширяем al до ax
 		sub ax, 1; // вычитаем 1 из ax
 		xchg ax, bx; // меняем местами ax и bx
-		idiv bx; // производим знаковое деление (ax:dx) на bx
+		idiv bx; // выполняем знаковое деление (ax:dx) на bx
 		add ax, 1; // прибавляем 1 к ax
 		mov v_asm, ax; // переносим ax в v_asm
 	}
 	if (v_asm < 0){
-		v_asm = 0xffffffff - v_asm + 1;
-		v_c = 0xffffffff - v_c + 1;
-		printf("Вычисления на ассемлере:\tv_asm = -%Xh\n", v_asm);
-		printf("Вычисления на СИ:\t\tv_c = -%Xh\n", v_c);
+		printf("Вычисления на ассемлере:\tv_asm = -%Xh\n", -v_asm);
+		printf("Вычисления на СИ:\t\tv_c = -%Xh\n", -v_c);
 	}
 	else
 	{
