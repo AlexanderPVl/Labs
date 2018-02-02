@@ -6,9 +6,14 @@ char* Task()
 	char str[3];
 	char Res;
 	printf("Enter Numbers:\n");
-	str[0] = 2;
-	str[1] = 8;
-	str[2] = 4;
+	while ((Res = getchar()) != '\n')
+	{
+		if (Res != ' '){
+			str[i] = Res - '0';
+			i++;
+		}
+	}
+	printf("Entered array: %d, %d, %d\n", str[0], str[1], str[2]);
 	__asm
 	{
 		mov al, str[0];
