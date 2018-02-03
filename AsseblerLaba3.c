@@ -6,29 +6,28 @@ char* Task()
 	char str[3];
 	char Res;
 	printf("Enter Numbers:\n");
-	while ((Res = getchar()) != '\n')
+	while ((Res = getchar()) != '\n' && i < 3)
 	{
 		if (Res != ' '){
 			str[i] = Res - '0';
 			i++;
 		}
 	}
-	printf("Entered array: %d, %d, %d\n", str[0], str[1], str[2]);
+	printf_s("Entered array: %d, %d, %d\n", str[0], str[1], str[2]);
 	__asm
 	{
-		mov al, str[0];
+		mov al, [str];
 		mov bx, 0;
-		mov bl, str[1];
-		mov cl, str[2];
+		mov bl, [str + 1];
+		mov cl, [str + 2];
 		mov dl, al;
 		imul cl;
-		sub bx, ax;
-		xchg bx, cx;
-		JCXZ Metka1;
+		cmp bx, ax;
+		JE Metka1;
 		JMP Metka2;
 	Metka1:
-		sub ax, 8;
-		JNS End;
+		cmp ax, 8;
+		JGE End;
 		add str[1], 2;
 		JMP End;
 	Metka2:
