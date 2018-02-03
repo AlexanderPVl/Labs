@@ -2,24 +2,6 @@
 
 typedef unsigned char uchar;
 
-int Pow(int a, int b)
-{
-	int res;
-	__asm
-	{
-		mov ecx, b;
-		mov eax, 1
-		cyc:
-		sub ecx, 0;
-		je end;
-		imul a;
-		dec ecx;
-		jne cyc;
-	end:
-		mov res, eax;
-	}
-}
-
 void EnterArr(uchar *Adr)
 {
 	int i = 0, k;
