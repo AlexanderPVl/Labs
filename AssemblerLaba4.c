@@ -67,7 +67,7 @@ uchar* Task()
 		JNE Filling;
 	}
 
-	printf("Result array:\n");
+	printf("Resulting array:\n");
 	for (i = 0; i < 16; i++)
 		printf("%d ", B[i]);
 }
