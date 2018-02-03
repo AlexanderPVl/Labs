@@ -23,17 +23,12 @@ int Pow(int a, int b)
 void EnterArr(uchar *Adr)
 {
 	int i = 0, k;
-	char c;
+	uchar c;
 	printf("Enter array:");
 	for (; i < 16; i++)
 	{
 		scanf_s("%d", &k);
-		__asm
-		{
-			mov eax, k;
-			mov c, al;
-		}
-		Adr[i] = c;
+		Adr[i] = (uchar)k;//c;
 	}
 }
 
@@ -54,14 +49,16 @@ uchar* Task()
 		lea esi, A;
 		lea edi, B;
 		mov ecx, 16;
+		mov ax, 0;
 		mov al, [esi];
 	Filling:
+		mov bx, 0;
 		mov bl, [esi];
 
 	Start:
-		CMP bl, 9;
+		CMP bx, 9;
 		JGE Stop;
-		mov bl, 9;
+		mov bx, 9;
 	Stop:
 		mov [edi], bl;
 		inc edi;
