@@ -22,7 +22,7 @@ Matrix* MakeUserMatrix(Matrix* Rep)
 		c -= '0';
 		if (c >= 0 || c <= 9)
 		{
-			lin = lin*Pow(10, i++) + c;
+			lin = lin*10 + c;
 		}
 	}
 	i = 0;
@@ -34,7 +34,7 @@ Matrix* MakeUserMatrix(Matrix* Rep)
 		c -= '0';
 		if (c > 0 || c <= 9)
 		{
-			col = col*Pow(10, i++) + c;
+			col = col*10 + c;
 		}
 	}
 	matr->Cols = col;
