@@ -11,7 +11,20 @@ typedef struct
 	int Lins;
 } Matrix;
 
-Matrix* MakeMatrix(Matrix* Rep, int Columns, int Lines, double N)
+Matrix* MakeUserMatrix(Matrix* Rep)
+{
+	Matrix* matr = (Matrix*)malloc(sizeof(Matrix));
+	printf("\nEnter number of Lines:\n");
+	while (scanf("%d", &(matr)))
+	{
+		printf("\nPlease enter correct value:\n");
+	}
+
+	Free(Rep);
+	return matr;
+}
+
+Matrix* _MakeMatrix(Matrix* Rep, int Columns, int Lines, double N)
 {
 	int i, j;
 	Matrix* matr = (Matrix*)malloc(sizeof(Matrix));
@@ -44,9 +57,9 @@ int PrintMatrix(Matrix *matr)
 		return 0;
 	}
 	int i, j;
-	printf("Number of lines: = %d\n", matr->Lins);
-	printf("Number of columns: = %d\n", matr->Cols);
-	printf("Matrix:\n");
+	printf("\n----------------------------------------------------------------------------\n>Number of lines: = %d\n", matr->Lins);
+	printf(">Number of columns: = %d\n", matr->Cols);
+	printf(">Matrix:\n\n");
 	for (i = 0; i < matr->Lins; i++)
 	{
 		for (j = 0; j < matr->Cols; j++)
@@ -55,6 +68,7 @@ int PrintMatrix(Matrix *matr)
 		}
 		printf("\n\n");
 	}
+	printf("----------------------------------------------------------------------------\n");
 	return 1;
 }
 
@@ -138,23 +152,47 @@ Matrix* MatrMultiply(Matrix *Rep, Matrix *m1, Matrix *m2)
 
 	Matrix *matr = (Matrix*)malloc(sizeof(Matrix));
 	matr->Adres = (column)malloc(m2->Lins*sizeof(line));
-	matr->Cols = m1->Cols;
-	matr->Lins = m2->Lins;
+	matr->Cols = m2->Cols;
+	matr->Lins = m1->Lins;
 	for (j = 0; j < matr->Lins; j++)
 	{
 		matr->Adres[j] = (line)malloc(m1->Cols*sizeof(double));
 	}
 
-	for (i = 0; i < m1->Lins; i++)
+	for (i = 0; i < matr->Lins; i++)
 	{
-		for (j = 0; j < m1->Cols; j++)
+		for (j = 0; j < matr->Cols; j++)
 		{
 			matr->Adres[i][j] = 0;
 			for (k = 0; k < m2->Lins; k++)
 			{
-				s = m1->Adres[i][k] + m2->Adres[k][j];
-				matr->Adres[i][j] = s;
+				s = m1->Adres[i][k] * m2->Adres[k][j];
+				matr->Adres[i][j] += s;
 			}
+		}
+	}
+	Free(Rep);
+	return matr;
+}
+
+Matrix* TranspMatr(Matrix *Rep, Matrix *mat)
+{
+	int i, j;
+	Matrix *matr = (Matrix*)malloc(sizeof(Matrix));
+	matr->Cols = mat->Lins;
+	matr->Lins = mat->Cols;
+	matr->Adres = (column)malloc(matr->Lins*sizeof(line));
+
+	for (j = 0; j < matr->Lins; j++)
+	{
+		matr->Adres[j] = (line)malloc(matr->Cols*sizeof(double));
+	}
+
+	for (i = 0; i < matr->Lins; i++)
+	{
+		for (j = 0; j < matr->Cols; j++)
+		{
+			matr->Adres[i][j] = mat->Adres[j][i];
 		}
 	}
 	Free(Rep);
@@ -174,23 +212,31 @@ int Free(Matrix *mat)
 
 int main()
 {
-	Matrix* matr1 = MakeMatrix(NULL, 5, 5, 1.2);
-	Matrix* matr2 = MakeMatrix(NULL, 5, 5, 2.3);
+	Matrix* matr1 = _MakeMatrix(NULL, 4, 4, 1.2);
+	Matrix* matr2 = _MakeMatrix(NULL, 4, 4, 2.3);
 	PrintMatrix(matr1);
 	PrintMatrix(matr2);
+	printf("\n\n>>> Summarising Matrixes <<<\n\n");
 	matr1 = MatrSumm(matr1, matr1, matr2, -1);
 	PrintMatrix(matr1);
+	printf("\n\n>>> Myltiplying Matrix by number <<<\n\n");
 	matr1 = NumMultiply(matr1, matr1, 3);
 	PrintMatrix(matr1);
-	matr1 = MakeMatrix(matr1, 3, 2, 2);
-	matr2 = MakeMatrix(matr2, 2, 3, 3);
+	matr1 = _MakeMatrix(matr1, 3, 2, 2);
+	matr2 = _MakeMatrix(matr2, 4, 3, 3);
+	printf("\n\n>>> Matrixes <<<\n\n");
 	PrintMatrix(matr1);
 	PrintMatrix(matr2);
 	matr1 = MatrMultiply(matr1, matr1, matr2);
-	printf("\n\nMyltiplied:::\n\n");
+	printf("\n\n>>> Myltiplying Matrixes <<<\n\n");
 	PrintMatrix(matr1);
-	return 0;
-
+	printf("\n\>>> Transposing Matrix <<<\n\n");
+	PrintMatrix(matr1);
+	printf("\n\Transposed to:\n\n");
+	matr2 = TranspMatr(matr2, matr1);
+	PrintMatrix(matr2);
 	free(matr1);
 	free(matr2);
+
+	return 0;
 }
