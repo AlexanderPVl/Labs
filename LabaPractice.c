@@ -14,31 +14,52 @@ typedef struct
 Matrix* MakeUserMatrix(Matrix* Rep)
 {
 	char c;
-	int lin = 0, col = 0, i = 0;
+	int lin = 0, col = 0, i = 0, sgn = 1, j;
 	Matrix* matr = (Matrix*)malloc(sizeof(Matrix));
 	printf("\nEnter number of Lines:\n");
 	while ((c = getchar()) != '\n' || lin <= 0)
 	{
 		c -= '0';
-		if (c >= 0 || c <= 9)
+		if (c >= 0 && c <= 9)
 		{
-			lin = lin*10 + c;
+			lin = lin * 10 + c*sgn;
 		}
 	}
 	i = 0;
 	matr->Lins = lin;
-	printf("%d", matr->Lins);
+	printf("Number of lines = %d", matr->Lins);
 	printf("\nEnter number of Columns:\n");
-	while ((c = getchar()) != '\n')
+	while ((c = getchar()) != '\n' || col <= 0)
 	{
 		c -= '0';
-		if (c > 0 || c <= 9)
+		if (c >= 0 && c <= 9)
 		{
-			col = col*10 + c;
+			col = col * 10 + c*sgn;
 		}
 	}
+	i = 0;
 	matr->Cols = col;
-	printf("%d", matr->Cols);
+	printf("Number of columns = %d", matr->Cols);
+
+	column Col = (column)malloc(lin*sizeof(line));
+
+	for (i = 0; i < lin; i++)
+	{
+		Col[i] = (line)malloc(col*sizeof(double));
+	}
+	matr->Adres = Col;
+	matr->Cols = col;
+	matr->Lins = lin;
+	printf("\nEnter Matrix:\n");
+	for (i = 0; i < lin; i++)
+	{
+		printf("\nEnter line %d:\n", i + 1);
+		for (j = 0; j < col; j++)
+		{
+			scanf("%lf", &(matr->Adres[i][j]));
+		}
+	}
+
 	Free(Rep);
 	return matr;
 }
