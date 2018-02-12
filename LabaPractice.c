@@ -3,6 +3,7 @@
 
 typedef double** column;
 typedef double* line;
+
 typedef struct
 {
 	column Adres;
@@ -10,11 +11,12 @@ typedef struct
 	int Lins;
 } Matrix;
 
-Matrix* MakeMatrix(int Columns, int Lines, double N)
+Matrix* MakeMatrix(Matrix* Rep, int Columns, int Lines, double N)
 {
 	int i, j;
 	Matrix* matr = (Matrix*)malloc(sizeof(Matrix));
 	column Col = (column)malloc(Lines*sizeof(line));
+
 	for (i = 0; i < Lines; i++)
 	{
 		Col[i] = (line)malloc(Columns*sizeof(double));
@@ -30,40 +32,47 @@ Matrix* MakeMatrix(int Columns, int Lines, double N)
 			matr->Adres[i][j] = N;
 		}
 	}
-
+	Free(Rep);
 	return matr;
 }
 
-void PrintMatrix(Matrix *matr)
+int PrintMatrix(Matrix *matr)
 {
-	int i, j;
-	printf("Number of lines: = %lf\n", matr->Lins);
-	printf("Number of columns: = %lf\n", matr->Cols);
-	printf("Matrix:\n");
-	for (i = 0; i < matr->Cols; i++)
+	if (matr == NULL)
 	{
-		for (j = 0; j < matr->Lins; j++)
+		printf("\nPrintMatrix ERROR: Adres of matrex equals NULL\n");
+		return 0;
+	}
+	int i, j;
+	printf("Number of lines: = %d\n", matr->Lins);
+	printf("Number of columns: = %d\n", matr->Cols);
+	printf("Matrix:\n");
+	for (i = 0; i < matr->Lins; i++)
+	{
+		for (j = 0; j < matr->Cols; j++)
 		{
 			printf("%lf\t", matr->Adres[i][j]);
 		}
 		printf("\n\n");
 	}
+	return 1;
 }
 
-Matrix* MatrSumm(Matrix *m1, Matrix *m2, int sign)
+Matrix* MatrSumm(Matrix *Rep, Matrix *m1, Matrix *m2, int sign)
 {
 	int i, j;
 	Matrix *matr = (Matrix*)malloc(sizeof(Matrix));
-	matr->Adres = (column)malloc(m1->Lins*sizeof(line));
 	matr->Cols = m1->Cols;
 	matr->Lins = m1->Lins;
+	matr->Adres = (column)malloc(m1->Lins*sizeof(line));
+
 	for (j = 0; j < matr->Lins; j++)
 	{
 		matr->Adres[j] = (line)malloc(m1->Cols*sizeof(double));
 	}
 	if (m1->Cols != m2->Cols || m1->Lins != m2->Lins)
 	{
-		printf("\nERROR: wrong size of matrix\n");
+		printf("\nMatrSumm ERROR: wrong size of matrix\n");
 		return NULL;
 	}
 
@@ -74,17 +83,22 @@ Matrix* MatrSumm(Matrix *m1, Matrix *m2, int sign)
 			matr->Adres[i][j] = m1->Adres[i][j] + sign*m2->Adres[i][j];
 		}
 	}
-
+	Free(Rep);
 	return matr;
 }
 
-Matrix* NumMultiply(Matrix *mat, double N)
+Matrix* NumMultiply(Matrix *Rep, Matrix *mat, double N)
 {
+	if (mat == NULL)
+	{
+		printf("\nNumMultiply ERROR: adress of matrex equals NULL\n");
+		return NULL;
+	}
 	int i, j;
 	Matrix *matr = (Matrix*)malloc(sizeof(Matrix));
-	matr->Adres = (column)malloc(mat->Lins*sizeof(line));
 	matr->Cols = mat->Cols;
 	matr->Lins = mat->Lins;
+	matr->Adres = (column)malloc(mat->Lins*sizeof(line));
 
 	for (j = 0; j < matr->Lins; j++)
 	{
@@ -98,17 +112,27 @@ Matrix* NumMultiply(Matrix *mat, double N)
 			matr->Adres[i][j] = mat->Adres[i][j] * N;
 		}
 	}
-
+	Free(Rep);
 	return matr;
 }
 
-Matrix* MatrMultiply(Matrix *m1, Matrix *m2)
+Matrix* MatrMultiply(Matrix *Rep, Matrix *m1, Matrix *m2)
 {
+	if (m1 == NULL)
+	{
+		printf("\nMatrMultiply ERROR: adress of first matrix equals NULL\n");
+		return NULL;
+	}
+	else if (m2 == NULL)
+	{
+		printf("\nMatrMultiply ERROR: adress of second matrix equals NULL\n");
+		return NULL;
+	}
 	int i, j, k;
 	double s;
 	if (m1->Cols != m2->Lins)
 	{
-		printf("\nERROR: wrong size of matrix\n");
+		printf("\nMatrMultiply ERROR: wrong size of matrix\n");
 		return NULL;
 	}
 
@@ -133,29 +157,37 @@ Matrix* MatrMultiply(Matrix *m1, Matrix *m2)
 			}
 		}
 	}
+	Free(Rep);
+	return matr;
 }
 
-Free(Matrix *mat)
+int Free(Matrix *mat)
 {
+	if (mat == NULL)
+		return 0;
 	int i;
-	for (i = 0; i < mat->Cols; i++)
+	for (i = 0; i < mat->Lins; i++)
 		free(mat->Adres[i]);
 	free(mat->Adres);
+	return 1;
 }
 
 int main()
 {
-	Matrix* matr1 = MakeMatrix(5, 5, 1.2);
-	Matrix* matr2 = MakeMatrix(5, 5, 2.3);
+	Matrix* matr1 = MakeMatrix(NULL, 5, 5, 1.2);
+	Matrix* matr2 = MakeMatrix(NULL, 5, 5, 2.3);
 	PrintMatrix(matr1);
 	PrintMatrix(matr2);
-	matr1 = MatrSumm(matr1, matr2, -1);
+	matr1 = MatrSumm(matr1, matr1, matr2, -1);
 	PrintMatrix(matr1);
-	matr1 = NumMultiply(matr1, 3);
+	matr1 = NumMultiply(matr1, matr1, 3);
 	PrintMatrix(matr1);
-	matr1 = MakeMatrix(3, 2, 2);
-	matr2 = MakeMatrix(2, 3, 3);
-	matr1 = MatrMultiply(matr1, matr2);
+	matr1 = MakeMatrix(matr1, 3, 2, 2);
+	matr2 = MakeMatrix(matr2, 2, 3, 3);
+	PrintMatrix(matr1);
+	PrintMatrix(matr2);
+	matr1 = MatrMultiply(matr1, matr1, matr2);
+	printf("\n\nMyltiplied:::\n\n");
 	PrintMatrix(matr1);
 	return 0;
 
