@@ -13,13 +13,32 @@ typedef struct
 
 Matrix* MakeUserMatrix(Matrix* Rep)
 {
+	char c;
+	int lin = 0, col = 0, i = 0;
 	Matrix* matr = (Matrix*)malloc(sizeof(Matrix));
 	printf("\nEnter number of Lines:\n");
-	while (scanf("%d", &(matr)))
+	while ((c = getchar()) != '\n' || lin <= 0)
 	{
-		printf("\nPlease enter correct value:\n");
+		c -= '0';
+		if (c >= 0 || c <= 9)
+		{
+			lin = lin*Pow(10, i++) + c;
+		}
 	}
-
+	i = 0;
+	matr->Lins = lin;
+	printf("%d", matr->Lins);
+	printf("\nEnter number of Columns:\n");
+	while ((c = getchar()) != '\n')
+	{
+		c -= '0';
+		if (c > 0 || c <= 9)
+		{
+			col = col*Pow(10, i++) + c;
+		}
+	}
+	matr->Cols = col;
+	printf("%d", matr->Cols);
 	Free(Rep);
 	return matr;
 }
