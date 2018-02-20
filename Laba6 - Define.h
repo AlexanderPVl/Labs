@@ -1,6 +1,20 @@
-#define ImportArray 1
+#define ImportArray 0
 
-void Imp_Array()
+TVArray Imp_Array(int Num_of_arr)
 {
-	printf("123");
+	TVArray TVA1 = { NULL, 15 };
+	TVA1.Adres = (TV*)malloc(sizeof(TV));
+	TVA1.Adres->Mark = "Mark1";
+
+	return TVA1;
+}
+
+TVArray Enter_Array()
+{
+	printf("Enter number of elements:\n");
+	TVArray TVA1 = { NULL, 15 };
+	TVA1.Adres = (TV*)malloc(sizeof(TV));
+	TVA1.Adres->Mark = "Mark1";
+
+	return TVA1;
 }
