@@ -5,23 +5,23 @@
 
 TV* Task(TVArray tva, string city)
 {
-	TVArray TV_arr = { NULL, 0, 0 };
+	TVArray TV_arr = { NULL, 0};
 #if ImportArray == 1
-	Imp_Array();
+	TV_arr = Imp_Array(1);
 #else
 	Enter_Array();
 #endif
-	printf("That's it");
 
 	return 0;
 }
 
 int main()
 {
-	Task()
+	TVArray TV_arr = { NULL, 0 };
+	Task(TV_arr, "123");
 
 
 
-	//Enter_TVArr(Tv, size);
-	return 1;
+		//Enter_TVArr(Tv, size);
+		return 1;
 }
