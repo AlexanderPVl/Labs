@@ -24,7 +24,6 @@ typedef struct
 {
 	TV* Adres;
 	int count;
-	int IsFilled; //0 - empty, 1 - filled
 } TVArray;
 
 void Free_TV_Array(TV *Tv)
