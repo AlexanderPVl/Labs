@@ -1,27 +1,41 @@
-#include <stdio.h>
-#include <string.h>
 #include "Structures.h"
-#include "Defining.h"
+#include "Array.h"
 
-TV* Task(TVArray tva, string city)
+TV* Most_Expensive(TVArray Tva, string city)
 {
-	TVArray TV_arr = { NULL, 0};
-#if ImportArray == 1
-	TV_arr = Imp_Array(1);
-#else
-	Enter_Array();
-#endif
-
-	return 0;
+	int i = 0, max = 0, max_ind = 0;
+	printf("Entered function: Most_Expensive\n");
+	if (Tva.Adres == NULL)
+	{
+		printf("Array is empty");
+		Tva = Make_TVArr(Tva);
+	}
+	for (; i < Tva.count; i++)
+	{
+		if (Tva.Adres[i].Params.Price > max)
+		{
+			max = Tva.Adres[i].Params.Price;
+			max_ind = i;
+		}
+	}
+	printf("Most expensive TV:\n");
+	PrintTVInfo(Tva.Adres + max_ind);
+	return Tva.Adres + max_ind;
 }
 
 int main()
 {
+	TV* Tv = NULL;
 	TVArray TV_arr = { NULL, 0 };
-	Task(TV_arr, "123");
+#ifdef INDEX
+	TV_arr = DefinedArrays(INDEX);
+	Tv = Most_Expensive(TV_arr, "Moscow");
+#else
+	TV_arr = Make_TVArr(TV_arr);
+	Tv = Most_Expensive(TV_arr, "Moscow");
+#endif
 
+	
 
-
-		//Enter_TVArr(Tv, size);
-		return 1;
+	return 1;
 }
