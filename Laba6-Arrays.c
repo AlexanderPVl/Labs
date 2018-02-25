@@ -1,65 +1,55 @@
 #include "Structures.h"
 
-//#define INDEX 1
-
-void Free_TV_Array(TV *Tv)
+TVArray* DefinedArrays()
 {
-	if (Tv == NULL)
-		return;
-	free(Tv->Prod.City);
-	free(Tv->Prod.Manufacture);
-	free(Tv);
-}
+	TVArray* TVA_ADRESS = (TVArray*)malloc(1 * sizeof(TVArray));
 
-TVArray DefinedArrays(int Arr_Ind)
-{
-	TVArray TVA1;
-	TVA1.Adres = (TV*)malloc((6)*sizeof(TV));
-	TVA1.count = 6;
+	TVA_ADRESS[0].Adres = (TV*)malloc((6)*sizeof(TV));
+	TVA_ADRESS[0].count = 6;
 	//Initialisation 1
-	TVA1.Adres[0].Mark = "Mark1";
-	TVA1.Adres[0].Params.Price = 24000;
-	TVA1.Adres[0].Params.ScreenSize = 24;
-	TVA1.Adres[0].Prod.City = "Moscow";
-	TVA1.Adres[0].Prod.Manufacture = "Manufacture1";
-	TVA1.Adres[0].Prod.Year = 2017;
+	TVA_ADRESS[0].Adres[0].Mark = "Mark1";
+	TVA_ADRESS[0].Adres[0].Prod.City = "Moscow";
+	TVA_ADRESS[0].Adres[0].Prod.Manufacture = "Manufacture1";
+	TVA_ADRESS[0].Adres[0].Params.Price = 24000;
+	TVA_ADRESS[0].Adres[0].Params.ScreenSize = 24;
+	TVA_ADRESS[0].Adres[0].Prod.Year = 2017;
 	//Initialisation 2
-	TVA1.Adres[1].Mark = "Mark2";
-	TVA1.Adres[1].Params.Price = 25000;
-	TVA1.Adres[1].Params.ScreenSize = 27;
-	TVA1.Adres[1].Prod.City = "Moscow";
-	TVA1.Adres[1].Prod.Manufacture = "Manufacture1";
-	TVA1.Adres[1].Prod.Year = 2017;
+	TVA_ADRESS[0].Adres[1].Mark = "Mark2";
+	TVA_ADRESS[0].Adres[1].Prod.City = "Moscow";
+	TVA_ADRESS[0].Adres[1].Prod.Manufacture = "Manufacture1";
+	TVA_ADRESS[0].Adres[1].Params.Price = 25000;
+	TVA_ADRESS[0].Adres[1].Params.ScreenSize = 27;
+	TVA_ADRESS[0].Adres[1].Prod.Year = 2017;
 	//Initialisation 3
-	TVA1.Adres[2].Mark = "Mark1";
-	TVA1.Adres[2].Params.Price = 26000;
-	TVA1.Adres[2].Params.ScreenSize = 30;
-	TVA1.Adres[2].Prod.City = "Moscow";
-	TVA1.Adres[2].Prod.Manufacture = "Manufacture1";
-	TVA1.Adres[2].Prod.Year = 2017;
+	TVA_ADRESS[0].Adres[2].Mark = "Mark1";
+	TVA_ADRESS[0].Adres[2].Prod.City = "Moscow";
+	TVA_ADRESS[0].Adres[2].Prod.Manufacture = "Manufacture1";
+	TVA_ADRESS[0].Adres[2].Params.Price = 26000;
+	TVA_ADRESS[0].Adres[2].Params.ScreenSize = 30;
+	TVA_ADRESS[0].Adres[2].Prod.Year = 2017;
 	//Initialisation 4
-	TVA1.Adres[3].Mark = "Mark2";
-	TVA1.Adres[3].Params.Price = 23000;
-	TVA1.Adres[3].Params.ScreenSize = 24;
-	TVA1.Adres[3].Prod.City = "Ufa";
-	TVA1.Adres[3].Prod.Manufacture = "Manufacture2";
-	TVA1.Adres[3].Prod.Year = 2018;
+	TVA_ADRESS[0].Adres[3].Mark = "Mark2";
+	TVA_ADRESS[0].Adres[3].Prod.City = "Ufa";
+	TVA_ADRESS[0].Adres[3].Prod.Manufacture = "Manufacture2";
+	TVA_ADRESS[0].Adres[3].Params.Price = 23000;
+	TVA_ADRESS[0].Adres[3].Params.ScreenSize = 24;
+	TVA_ADRESS[0].Adres[3].Prod.Year = 2018;
 	//Initialisation 5
-	TVA1.Adres[4].Mark = "Mark2";
-	TVA1.Adres[4].Params.Price = 28000;
-	TVA1.Adres[4].Params.ScreenSize = 27;
-	TVA1.Adres[4].Prod.City = "Ufa";
-	TVA1.Adres[4].Prod.Manufacture = "Manufacture2";
-	TVA1.Adres[4].Prod.Year = 2018;
+	TVA_ADRESS[0].Adres[4].Mark = "Mark2";
+	TVA_ADRESS[0].Adres[4].Prod.City = "Ufa";
+	TVA_ADRESS[0].Adres[4].Prod.Manufacture = "Manufacture2";
+	TVA_ADRESS[0].Adres[4].Params.Price = 28000;
+	TVA_ADRESS[0].Adres[4].Params.ScreenSize = 27;
+	TVA_ADRESS[0].Adres[4].Prod.Year = 2018;
 	//Initialisation 6
-	TVA1.Adres[5].Mark = "Mark2";
-	TVA1.Adres[5].Params.Price = 24000;
-	TVA1.Adres[5].Params.ScreenSize = 30;
-	TVA1.Adres[5].Prod.City = "Ufa";
-	TVA1.Adres[5].Prod.Manufacture = "Manufacture1";
-	TVA1.Adres[5].Prod.Year = 2018;
+	TVA_ADRESS[0].Adres[5].Mark = "Mark2";
+	TVA_ADRESS[0].Adres[5].Prod.City = "Ufa";
+	TVA_ADRESS[0].Adres[5].Prod.Manufacture = "Manufacture1";
+	TVA_ADRESS[0].Adres[5].Params.Price = 24000;
+	TVA_ADRESS[0].Adres[5].Params.ScreenSize = 30;
+	TVA_ADRESS[0].Adres[5].Prod.Year = 2018;
 
-	return TVA1;
+	return 	TVA_ADRESS;
 }
 
 TVArray Make_TVArr(TVArray Rep)
@@ -93,7 +83,7 @@ TVArray Make_TVArr(TVArray Rep)
 		printf("Enter year:\n");
 		scanf("%d", &Rep.Adres[i].Prod.Year);
 	}
-	printf("Array is defined\n");
+	printf("Array is defined\n\n");
 	return Rep;
 }
 
