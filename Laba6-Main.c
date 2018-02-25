@@ -25,17 +25,22 @@ TV* Most_Expensive(TVArray Tva, string city)
 
 int main()
 {
+	int i;
+	TVArray* TVA_ADRESS = NULL;
 	TV* Tv = NULL;
 	TVArray TV_arr = { NULL, 0 };
 #ifdef INDEX
-	TV_arr = DefinedArrays(INDEX);
+	TVA_ADRESS = DefinedArrays();
+	TV_arr = TVA_ADRESS[INDEX];
 	Tv = Most_Expensive(TV_arr, "Moscow");
 #else
 	TV_arr = Make_TVArr(TV_arr);
 	Tv = Most_Expensive(TV_arr, "Moscow");
 #endif
 
-	
+	for (i = 0; i < COUNT; i++)
+		free((TVA_ADRESS + i)->Adres);
+	free(TVA_ADRESS);
 
 	return 1;
 }
