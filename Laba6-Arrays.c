@@ -1,11 +1,37 @@
 #include "Structures.h"
 
+string EnterString(string Str, int len)
+{
+	int i = 0, Len = len;
+	char c;
+	while ((c = getchar()) == '\n');
+	Str[i++] = c;
+	while ((c = getchar()) != '\n')
+	{
+		if (i >= len)
+		{
+			Len += len;
+			Str = (string)realloc(Str, Len*sizeof(char));
+		}
+		Str[i++] = c;
+	}
+	c = '0';
+	if (i >= len)
+	{
+		Len += len;
+		Str = (string)realloc(Str, Len*sizeof(char));
+	}
+	Str[i] = '\0';
+	return Str;
+}
+
 TVArray* DefinedArrays()
 {
-	TVArray* TVA_ADRESS = (TVArray*)malloc(1 * sizeof(TVArray));
+	TVArray* TVA_ADRESS = (TVArray*)malloc(COUNT * sizeof(TVArray));
 
 	TVA_ADRESS[0].Adres = (TV*)malloc((6)*sizeof(TV));
 	TVA_ADRESS[0].count = 6;
+	//TV Array 1
 	//Initialisation 1
 	TVA_ADRESS[0].Adres[0].Mark = "Mark1";
 	TVA_ADRESS[0].Adres[0].Prod.City = "Moscow";
@@ -54,9 +80,9 @@ TVArray* DefinedArrays()
 
 TVArray Make_TVArr(TVArray Rep)
 {
-	int Count = 0;
+	int Count = 0, len = 15;
 	printf("Enter number of TV's\n");
-	scanf("%d", &Count);
+	scanf_s("%d", &Count);
 	int i = 0;
 	free(Rep.Adres);
 	Rep.count = Count;
@@ -65,23 +91,26 @@ TVArray Make_TVArr(TVArray Rep)
 	for (; i < Count; i++)
 	{
 		printf(">Print information about TV No%d\n", i + 1);
-		Rep.Adres[i].Mark = (string)malloc(15 * sizeof(char));
-		Rep.Adres[i].Prod.City = (string)malloc(15 * sizeof(char));
-		Rep.Adres[i].Prod.Manufacture = (string)malloc(15 * sizeof(char));
+		Rep.Adres[i].Mark = (string)malloc(len * sizeof(char));
+		Rep.Adres[i].Prod.City = (string)malloc(len * sizeof(char));
+		Rep.Adres[i].Prod.Manufacture = (string)malloc(len * sizeof(char));
 		printf("Enter Mark:\n");
-		scanf("%s", Rep.Adres[i].Mark);
+		Rep.Adres[i].Mark = EnterString(Rep.Adres[i].Mark, len);
+		//scanf("%s", Rep.Adres[i].Mark);
 		printf(">Enter parameters:\n");
 		printf("Enter price:\n");
-		scanf("%d", &Rep.Adres[i].Params.Price);
+		scanf_s("%d", &Rep.Adres[i].Params.Price);
 		printf("Enter Screen sise:\n");
-		scanf("%d", &Rep.Adres[i].Params.ScreenSize);
+		scanf_s("%d", &Rep.Adres[i].Params.ScreenSize);
 		printf(">Enter producer information:\n");
 		printf("Enter City:\n");
-		scanf("%s", Rep.Adres[i].Prod.City);
+		Rep.Adres[i].Prod.City = EnterString(Rep.Adres[i].Prod.City, len);
+		//scanf("%s", Rep.Adres[i].Prod.City);
 		printf("Enter manufacturer:\n");
-		scanf("%s", Rep.Adres[i].Prod.Manufacture);
+		Rep.Adres[i].Prod.Manufacture = EnterString(Rep.Adres[i].Prod.Manufacture, len);
+		//scanf("%s", Rep.Adres[i].Prod.Manufacture);
 		printf("Enter year:\n");
-		scanf("%d", &Rep.Adres[i].Prod.Year);
+		scanf_s("%d", &Rep.Adres[i].Prod.Year);
 	}
 	printf("Array is defined\n\n");
 	return Rep;
