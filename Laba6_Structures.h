@@ -1,7 +1,9 @@
 #ifndef _STRUCTURES_H
 #define _STRUCTURES_H
 
-#define INDEX 1
+#define DEFINED
+#define INDEX 0
+#define COUNT 1
 #include <stdio.h>
 #include <string.h>
 #include <malloc.h>
