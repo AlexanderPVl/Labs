@@ -3,7 +3,8 @@
 
 #include "Structures.h"
 
-TVArray DefinedArrays(int Arr_Ind);
+string EnterString(string Str, int len);
+TVArray* DefinedArrays();
 TVArray Make_TVArr(TVArray Rep);
 void PrintTVInfo(TV* Tv);
 
