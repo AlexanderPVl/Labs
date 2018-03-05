@@ -1,11 +1,9 @@
-#include "Menu.h"
+#include "Files.h"
 
 int main()
 {
-	MainMenu();
-	while (1 == 1){
-		Do_Command(GetCommand());
-	}
+	char* FileName = "f.txt";
 
+	Task_A(FileName, 4);
 	return 0;
 }
