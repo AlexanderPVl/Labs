@@ -65,17 +65,19 @@ void WriteToPosition(FILE *f, int Pos, char n)
 
 void WriteNumber(FILE *f, int Position, int Num)
 {
-	char c;
-	int n, i = 0;
+	int n, i = 0, c;
+	c = (int)Num;
 	//fseek(f, Position, SEEK_SET);
 
-	while (Num > 0)
+	while (c > 0)
 	{
-		n = Num % 10 + '0', f;
+		n = c % 10 + '0', f;
 		WriteToPosition(f, Position, n);
-		Num = Num / 10;
+		c = c / 10;
 		i++;
 	}
+	WriteToPosition(f, Position + i, '.');
+
 	WriteToPosition(f, Position + i, ' ');
 }
 
@@ -160,11 +162,17 @@ void Task_A(char* Name, int N)
 	fclose(f);
 }
 
-void Task_B()
+void Task_B(char* filename)
 {
-	int Len = 20;
-	char Str = (char*)malloc(sizeof(char));
-
+	FILE* f = fopen(filename, "w+");
+	putc('\0', f);
+	int Len = 20, flen;
+	fseek(f, 0, SEEK_END);                          // устанавливаем позицию в конец файла
+	flen = ftell(f);
+	rewind(f);
+	char Str = (char*)malloc(flen*sizeof(char));
+	fread(Str, sizeof(char), flen, f);
+	printf("%s", Str);
 }
 
 #endif
