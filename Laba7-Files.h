@@ -10,8 +10,8 @@ int Pow(int a, int b);
 void MakeFile(FILE *f);
 double MakeNumber(FILE* f, char c);
 void WriteToPosition(FILE *f, int Pos, char n);
-void WriteNumber(FILE *f, int Position, int Num);
+void WriteNumber(FILE *f, int Position, double Num);
 void Task_A(char* Name, int N);
-void Task_B();
+void Task_B(char* filename);
 
 #endif
