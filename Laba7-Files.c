@@ -22,6 +22,11 @@ int Pow(int a, int b)
 	return res;
 }
 
+double Abs(double n)
+{
+	return n >= 0 ? n : -n;
+}
+
 void MakeFile(FILE *f)
 {
 	char c;
@@ -45,11 +50,11 @@ void WriteToPosition(FILE *f, int Pos, char n)
 	fseek(f, 0, SEEK_END);
 	EndPos = ftell(f);
 	printf("%d", EndPos);
-	for (int i = EndPos-1; i >= Pos; i--)
+	for (int i = EndPos - 1; i >= Pos; i--)
 	{
 		fseek(f, i, SEEK_SET);
 		c = getc(f);
-		fseek(f, i+1, SEEK_SET);
+		fseek(f, i + 1, SEEK_SET);
 		//fputc(' ', f);
 		fputc(c, f);
 		printf("c = %c\n", c);
@@ -71,7 +76,7 @@ void WriteNumber(FILE *f, int Position, int Num)
 		Num = Num / 10;
 		i++;
 	}
-	WriteToPosition(f, Position+i, ' ');
+	WriteToPosition(f, Position + i, ' ');
 }
 
 double MakeNumber(FILE* f, char c)
@@ -82,12 +87,12 @@ double MakeNumber(FILE* f, char c)
 	Sum = Sum * 10 + c - '0';
 	while ((c = getc(f)) != ' ' && c != '>')
 	{
-		Sum = Sum * 10 + c - '0';
+	Sum = Sum * 10 + c - '0';
 	}
 
 	return Sum;*/
 	Sum = Sum * 10 + c - '0';
-	while ((c = getc(f)) != '.' && c != ' ' && c != '>')
+	while ((c = getc(f)) != '\n' && c != ' ' && c != '>')
 	{
 		if (('0' <= c && c <= '9')){
 			Sum = Sum * 10 + c - '0';
@@ -95,10 +100,10 @@ double MakeNumber(FILE* f, char c)
 		else if (c == '.')
 			break;
 	}
-	if (c == ' ' || c != '>')
+	if (c == ' ' || c == '>' || c == '\n')
 		return Sum;
 
-	while ((c = getchar()) != ' ' && c != '>')
+	while ((c = getchar()) != ' ' && c != '>' && c != '\n')
 	{
 		if ('0' <= c && c <= '9'){
 			Sum = Sum + (c - '0') / Pow(10, i++);
@@ -131,8 +136,10 @@ void Task_A(char* Name, int N)
 			if (i == N)
 				num0 = num;
 
-			num = MakeNumber(f, c);
-			summ += num;
+			//num = MakeNumber(f, c);
+			fseek(f, -1, SEEK_CUR);
+			fscanf(f, "%lf", &num);
+			summ += Abs(num);
 			printf("Number = %lf\n", num);
 			i++;
 		}
@@ -144,8 +151,9 @@ void Task_A(char* Name, int N)
 
 	}
 	//printf("Num = %d", num0);
+	//printf("Abs(-123) = %lf\n", Abs(-123));
 	printf("POW(10,3) == %d\n", Pow(10, 3));
-	printf("Position = %d", fpos-1);
+	printf("Position = %d", fpos - 1);
 	printf("\nSumm = %lf\n", summ);
 	WriteNumber(f, fpos - 1, summ);
 	//WriteToPosition(f, 2, 'z');
@@ -154,6 +162,8 @@ void Task_A(char* Name, int N)
 
 void Task_B()
 {
+	int Len = 20;
+	char Str = (char*)malloc(sizeof(char));
 
 }
 
