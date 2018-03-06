@@ -37,8 +37,6 @@ void MakeFile(FILE *f)
 	}
 	fputc('>', f);
 	fputc('>', f);
-	//fputc(c, f);
-	//fputc(c, f);
 	fseek(f, 0, SEEK_SET);
 
 }
@@ -63,36 +61,29 @@ void WriteToPosition(FILE *f, int Pos, char n)
 	fputc(n, f);
 }
 
-void WriteNumber(FILE *f, int Position, int Num)
+void WriteNumber(FILE *f, int Position, double Num)
 {
 	int n, i = 0, c;
-	c = (int)Num;
-	//fseek(f, Position, SEEK_SET);
-
-	while (c > 0)
-	{
-		n = c % 10 + '0', f;
-		WriteToPosition(f, Position, n);
-		c = c / 10;
-		i++;
-	}
-	WriteToPosition(f, Position + i, '.');
+	double C;
+	char Str[20];
 
 	WriteToPosition(f, Position + i, ' ');
+	WriteToPosition(f, Position, '>');
+
+	i = sprintf(Str, "%lf", Num);
+	for (int j = 0; j <= i; j++)
+		WriteToPosition(f, Position, ' ');
+	Str[i] = '\0';
+	printf("String = %s", Str);
+	fwrite(Str, sizeof(char), i, f);
+	WriteToPosition(f, Position, '<');
 }
 
 double MakeNumber(FILE* f, char c)
 {
 	double Sum = 0;
 	int i = 1;
-	/*
-	Sum = Sum * 10 + c - '0';
-	while ((c = getc(f)) != ' ' && c != '>')
-	{
-	Sum = Sum * 10 + c - '0';
-	}
 
-	return Sum;*/
 	Sum = Sum * 10 + c - '0';
 	while ((c = getc(f)) != '\n' && c != ' ' && c != '>')
 	{
@@ -132,13 +123,10 @@ void Task_A(char* Name, int N)
 
 	while ((c = getc(f)) != '>'){
 		if (c != ' '){
-			//num = MakeNumber(f, c);
 			if (i == N - 1)
 				fpos = ftell(f);
 			if (i == N)
 				num0 = num;
-
-			//num = MakeNumber(f, c);
 			fseek(f, -1, SEEK_CUR);
 			fscanf(f, "%lf", &num);
 			summ += Abs(num);
@@ -152,13 +140,10 @@ void Task_A(char* Name, int N)
 		return;
 
 	}
-	//printf("Num = %d", num0);
-	//printf("Abs(-123) = %lf\n", Abs(-123));
 	printf("POW(10,3) == %d\n", Pow(10, 3));
 	printf("Position = %d", fpos - 1);
 	printf("\nSumm = %lf\n", summ);
 	WriteNumber(f, fpos - 1, summ);
-	//WriteToPosition(f, 2, 'z');
 	fclose(f);
 }
 
@@ -167,7 +152,7 @@ void Task_B(char* filename)
 	FILE* f = fopen(filename, "w+");
 	putc('\0', f);
 	int Len = 20, flen;
-	fseek(f, 0, SEEK_END);                          // устанавливаем позицию в конец файла
+	fseek(f, 0, SEEK_END);
 	flen = ftell(f);
 	rewind(f);
 	char Str = (char*)malloc(flen*sizeof(char));
