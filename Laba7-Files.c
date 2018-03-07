@@ -29,14 +29,12 @@ double Abs(double n)
 
 void PrintFile(FILE *f)
 {
-	fseek(f, 0, SEEK_END);
-	char c;
-	int i, Len;
-	Len = ftell(f);
+	int c;
+	int i;
 	fseek(f, 0, SEEK_SET);
-	for (i = 0; i < Len; i++)
+	//rewind(f);
+	while ((c = getc(f)) != EOF)
 	{
-		c = getc(f);
 		putchar(c);
 	}
 }
@@ -80,8 +78,8 @@ void WriteNumber(FILE *f, int Position, double Num)
 	int n, i = 0, c;
 	double C;
 	char Str[20];
-
-	WriteToPosition(f, Position + i, ' ');
+	fseek(f, Position, SEEK_SET);
+	/*WriteToPosition(f, Position + i, ' ');
 	WriteToPosition(f, Position, '>');
 
 	i = sprintf(Str, "%lf", Num);
@@ -89,7 +87,12 @@ void WriteNumber(FILE *f, int Position, double Num)
 		WriteToPosition(f, Position, ' ');
 	Str[i] = '\0';
 	//printf("String = %s", Str);
-	fwrite(Str, sizeof(char), i-1, f);
+	fwrite(Str, sizeof(char), i - 1, f);*/
+	WriteToPosition(f, Position, ' ');
+	WriteToPosition(f, Position, '>');
+	for (int j = 0; j <= 11; j++)
+		WriteToPosition(f, Position, ' ');
+	fprintf(f,"%10.5lf", Num);
 	WriteToPosition(f, Position, '<');
 }
 
