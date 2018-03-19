@@ -2,8 +2,13 @@
 
 int main()
 {
-	char* FileName = "f.txt";
+	char* FileName = "f.txt", c;
 
-	Task_A(FileName, 4);
+	printf("Choose task: enter 'a' or 'b'\n");
+	if ((c=getchar()) == 'a')
+		Task_A(FileName, 1);
+	else if (c == 'b')
+		Task_B(FileName);
+	
 	return 0;
 }
