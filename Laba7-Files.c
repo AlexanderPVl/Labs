@@ -232,6 +232,7 @@ void Task_B(char* filename)
 	FILE* g = fopen("g.txt", "w");
 	fprintf(g, "%s", Adres);
 	fclose(g);
+	free(Adres);
 	printf("\nThe end\n");
 }
 
