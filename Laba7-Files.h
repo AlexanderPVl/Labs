@@ -16,4 +16,10 @@ void Trigger(char* Adr, char c, int* EndPos, int* CurrPos);
 void Task_A(char* Name, int N);
 void Task_B(char* filename);
 
+void Task_A_Bin();
+double FindSumm(FILE* f);
+FILE* CreateFile(FILE *f);
+void WriteToPosition_Bin(FILE *f, int Position, double Number);
+void PrintFile_Bin(FILE *f);
+
 #endif
