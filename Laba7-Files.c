@@ -11,7 +11,6 @@ double Abs(double n)
 void PrintFile(FILE *f)
 {
 	int c;
-	int i;
 	rewind(f);
 	while ((c = getc(f)) != EOF)
 	{
@@ -70,8 +69,6 @@ void MoveFile(FILE *f, int Pos, int Count)
 void WriteNumber(FILE *f, int Position, double Num)
 {
 	int n, i = 0, c;
-	double C;
-	char Str[20];
 	fseek(f, Position, SEEK_SET);
 	WriteToPosition(f, Position, ' ');
 	n = (int)Num;
@@ -100,6 +97,7 @@ void Task_A(char* Name, int N)
 	if (fopen(Name, "r") == NULL){ ////
 		f = fopen(Name, "w+");
 		MakeFile(f); ////
+		fclose(f);
 	}
 	else
 		f = fopen(Name, "r+");
