@@ -4,6 +4,7 @@
 #include "Includes.h"
 
 FILE* CreateData(char* DBName, char End);
+void PrintDataBase(char* DBName);
 void AddLine(char* DBName);
 
 #endif
