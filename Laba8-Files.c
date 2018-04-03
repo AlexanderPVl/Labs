@@ -14,6 +14,17 @@ FILE* CreateData(char* DBName, char End)
     fclose(f);
 }
 
+void PrintDataBase(char* DBName)
+{
+    FILE *f = fopen(DBName, "r");
+    printf("Printing database:\n");
+    int c;
+    while ((c = getc(f)) != EOF)
+    {
+        putchar(c);
+    }
+}
+
 void AddLine(char* DBName)
 {
     FILE *f = fopen(DBName, "r");
@@ -55,6 +66,8 @@ void AddLine(char* DBName)
     printf("Enter number of passengers:\n");
     scanf("%d", &Num);
     fprintf(f, "%d", Num);
+
+    fclose(f);
 }
 
 #endif
