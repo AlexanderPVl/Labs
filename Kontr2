@@ -1,0 +1,47 @@
+#pragma once
+
+#include <stdio.h>
+#include <malloc.h>
+
+FILE* CreateFile(char* FileName, char End)
+{
+	FILE *f = fopen(FileName, "w");
+	char c;
+	printf("Enter File:\n");
+	while ((c = getchar()) != End)
+	{
+		putc(c, f);
+	}
+	return f;
+	fclose(f);
+	printf("Input succesfull:\n");
+}
+
+void Task1(char* FileName)
+{
+	FILE *f;
+	CreateFile(FileName, ';');
+	f = fopen(FileName, "r");
+	char* Arr = (char*)malloc(200 * sizeof(char));
+	int c, i = 0, Flag = 0;
+	printf("Start copying:\n");
+	fseek(f, 0, SEEK_SET);
+	while ((c = getc(f)) != EOF)
+	{
+		if ('0' <= c && c <= '9'){
+			if (!Flag){
+				Flag = 1;
+				Arr[i++] = (char)'(';
+				Arr[i++] = (char)c;
+			}
+			else{
+				Arr[i++] = (char)c;
+				Flag = 1;
+			}
+		}
+		else
+			Arr[i++] = (char)c;
+	}
+	Arr[i] = '\0';
+	printf("\nFinal string:\n%s", Arr);
+}
