@@ -6,6 +6,7 @@ int main()
     printf("Hello!\n");
     CreateData(DBName, ';');
     AddLine(DBName);
-    
+    AddLine(DBName);
+    PrintDataBase(DBName);
     return 0;    
 }
