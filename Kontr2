@@ -5,7 +5,7 @@
 
 FILE* CreateFile(char* FileName, char End)
 {
-	FILE *f = fopen(FileName, "w");
+	FILE *f = fopen(FileName, "r");
 	char c;
 	printf("Enter File:\n");
 	while ((c = getchar()) != End)
@@ -36,7 +36,7 @@ void Task1(char* FileName)
 			}
 			else{
 				Arr[i++] = (char)c;
-				Flag = 1;
+				Flag = 0;
 			}
 		}
 		else
