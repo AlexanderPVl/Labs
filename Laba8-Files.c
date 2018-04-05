@@ -5,12 +5,14 @@
 
 FILE* CreateData(char* DBName, char End)
 {
+	printf("Enter header of database. End it with ';'\n");
 	FILE *f = fopen(DBName, "w");
 	char c;
 	while ((c = getchar()) != End)
 	{
 		putc(c, f);
 	}
+	putc('\n', f);
 	fclose(f);
 }
 
