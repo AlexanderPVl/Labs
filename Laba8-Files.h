@@ -1,10 +1,10 @@
-#ifndef _FILES_H
-#define _FILES_H
+#pragma once
 
-#include "Includes.h"
+#include <stdio.h>
+#include <malloc.h>
 
-FILE* CreateData(char* DBName, char End);
-void PrintDataBase(char* DBName);
-void AddLine(char* DBName);
-
-#endif
+void Menu(char* FileName);
+void AddRecord(char* FileName, char Sep);
+void PrintInfo(char** Adr, int i);
+char** ScanData(char* FileName, int *RecordCount);
+void PrintAnnot();
