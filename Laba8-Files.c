@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <malloc.h>
 
-void AddRecord(char* FileName, char Sep) // adds new record to existing database
+void AddRecord(char* FileName, char Sep) // adds new record to existing database, Sep - symbol of separation
 {
 	FILE *f = fopen(FileName, "r");
 	if (f == NULL){
