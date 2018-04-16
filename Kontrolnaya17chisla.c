@@ -2,7 +2,7 @@
 
 #include "Functions.h"
 
-void MakeFile(char* FileName)
+void MakeFileBin(char* FileName)
 {
 	int i = 0, num;
 	FILE *f;
@@ -30,7 +30,7 @@ void MakeFile(char* FileName)
 	return;
 }
 
-int* ScanNumbers(char* FileName, int** Dest, int Ret) // if Ret = 1, func will return a pointer. if Ret = 0, memmory will be clean
+int* ScanNumbersBin(char* FileName, int** Dest, int Ret) // if Ret = 1, func will return a pointer. if Ret = 0, memmory will be clean
 {
 	int count, i = -1;
 	int* mem;
@@ -57,7 +57,7 @@ int* ScanNumbers(char* FileName, int** Dest, int Ret) // if Ret = 1, func will r
 	free(mem);
 }
 
-void PrintFile(char* FileName)
+void PrintFileBin(char* FileName)
 {
 	int count, num;
 	FILE *f;
