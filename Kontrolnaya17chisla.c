@@ -2,6 +2,59 @@
 
 #include "Functions.h"
 
+#pragma once
+
+#include "Functions.h"
+
+void MakeFile(char* FileName, char EndSymb)
+{
+	int i = 0, num;
+	FILE *f;
+	if ((f = fopen(FileName, "r")))
+	{
+		printf("File already exists, do you want to rewrite it? 1 - yes, 0 - no\n");
+		if (getch() == '0'){
+			fclose(f);
+			return;
+		}
+	}
+	f = fopen(FileName, "w");
+
+	printf("Enter text, end witf %c:\n", EndSymb);
+	while ((i = getch()) != EndSymb)
+	{
+		if (i == 13){
+			putch('\n');
+			putc('\n', f);
+		}
+		putch(i);
+		putc(i, f);
+	}
+
+	fclose(f);
+	return;
+}
+
+void PrintFile(char* FileName)
+{
+	int i = 0;
+	FILE *f;
+	if (!(f = fopen(FileName, "r")))
+	{
+		printf("File does not exists\n");
+			return;
+	}
+	f = fopen(FileName, "r");
+	printf("\nFile text:\n");
+	while ((i = getc(f)) != EOF)
+	{
+		//if (i == 10)
+		//putch('\n');
+		putch(i);
+	}
+	putch('\n');
+}
+
 void MakeFileBin(char* FileName)
 {
 	int i = 0, num;
