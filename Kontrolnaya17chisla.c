@@ -1,10 +1,8 @@
 #pragma once
 
-#include "Functions.h"
-
-#pragma once
-
-#include "Functions.h"
+#include <stdio.h>
+#include <io.h>
+#define ESC 27
 
 void MakeFile(char* FileName, char EndSymb)
 {
@@ -53,6 +51,49 @@ void PrintFile(char* FileName)
 		putch(i);
 	}
 	putch('\n');
+	return;
+}
+
+void DeleteInterval(char* FileName, int Set, int End)
+{
+	int handle;
+	int i = 0, c, num, filelen, delt;
+	FILE *f;
+	if (!(f = fopen(FileName, "r")))
+	{
+		printf("File does not exist\n");
+		if (getch() == '0'){
+			fclose(f);
+			return;
+		}
+	}
+	f = fopen(FileName, "r+");
+	fseek(f, 0, SEEK_END);
+	filelen = ftell(f);
+	if (Set<0 || End < Set)
+	{
+		printf("\nERROR\n");
+		return;
+	}
+	else if (End > filelen){
+		fclose(f);
+		fopen(FileName, "w");
+		return;
+	}
+
+	delt = End - Set;
+	//End += 1;
+	fseek(f, End, SEEK_SET);
+	while (i <= delt && (c = getc(f)) != EOF)
+	{
+		fseek(f, Set + i, SEEK_SET);
+		i++;
+		putc(c, f);
+		fseek(f, End + i, SEEK_SET);
+	}
+	handle = fileno(f);
+	chsize(handle, End + 1);
+	return;
 }
 
 void MakeFileBin(char* FileName)
