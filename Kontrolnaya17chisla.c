@@ -82,7 +82,7 @@ void DeleteInterval(char* FileName, int Set, int End)
 	}
 
 	delt = End - Set;
-	//End += 1;
+	End += 1;
 	fseek(f, End, SEEK_SET);
 	while (i <= delt && (c = getc(f)) != EOF)
 	{
@@ -92,7 +92,7 @@ void DeleteInterval(char* FileName, int Set, int End)
 		fseek(f, End + i, SEEK_SET);
 	}
 	handle = fileno(f);
-	chsize(handle, End + 1);
+	chsize(handle, filelen - delt - 1);
 	return;
 }
 
