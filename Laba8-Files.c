@@ -3,6 +3,55 @@
 #include <stdio.h>
 #include <malloc.h>
 
+void SearchByField(char* FileName) // prints recorsd with wanted field
+{
+	char Flag = 1;
+	int Num, pass, DBsize, i, j;
+	int BufInt;
+	char* Dest = (char*)malloc(WORD_SIZE * CHARsize);
+	char* Comp = (char*)malloc(WORD_SIZE * CHARsize);
+	char* Type = (char*)malloc(WORD_SIZE * CHARsize);
+	char* time1 = (char*)malloc(WORD_SIZE * CHARsize);
+	char* time2 = (char*)malloc(WORD_SIZE * CHARsize);
+	char* BufStr = (char*)malloc(WORD_SIZE * CHARsize);
+	char** DB;
+
+	printf("Print fields. If you want to skip field, print \"-1\" ");
+	printf("Enter Flight number\n");
+	scanf("%d", &Num);
+	printf("Enter destination\n");
+	scanf("%s", Dest);
+	printf("Enter aviacompany\n");
+	scanf("%s", Comp);
+	printf("Enter plane type\n");
+	scanf("%s", Type);
+	printf("Enter time by shedule (hours:minutes)\n");
+	scanf("%s", time1);
+	printf("Enter expected time (hours:minutes)\n");
+	scanf("%s", time2);
+	printf("Enter number of passengers\n");
+	scanf("%d", &pass);
+
+	ScanData(FileName, &DBsize);
+	DB = ScanData(FileName, NULL);
+	
+	for (i = 0; i < sizeof(DBsize); i++)
+	{
+		if ()
+	Metka1:
+
+	}
+
+	free(Dest);
+	free(Comp);
+	free(Type);
+	free(time1);
+	free(time2);
+	for (i = 0; i < DBsize; i++)
+		free(DB[i]);
+	free(DB);
+}
+
 void AddRecord(char* FileName, char Sep) // adds new record to existing database, Sep - symbol of separation
 {
 	FILE *f = fopen(FileName, "r");
