@@ -10,6 +10,7 @@
 #define ALT 18
 #define WORD_SIZE 15
 #define RECORD_SIZE 35
+#define CLEAN_CONSOLE system("cls")
 
 void Menu(char* FileName);
 void MakeDataBase(char* FileName);
