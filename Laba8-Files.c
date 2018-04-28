@@ -346,7 +346,7 @@ void Menu(char* FileName) // user interface with choice
 		switch (c)
 		{
 		case ('0') :
-			system("cls");
+			CLEAN_CONSOLE;
 			PrintAnnot();
 			break;
 		case ('1') :
@@ -383,7 +383,7 @@ void Menu(char* FileName) // user interface with choice
 			break;
 		case('5') :
 			MakeDataBase(FileName, '\t');
-			system("cls");
+			CLEAN_CONSOLE;
 			PrintAnnot();
 			break;
 		case('6') :
