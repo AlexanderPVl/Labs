@@ -19,6 +19,23 @@ char* StrSepCpy(char* Don, char* Dest, char Sep) // returns pointer on Separator
 	return Don + i;
 }
 
+void SortByField(char* FileName)
+{
+	char c;
+	char** DB;
+	int Count, N1 = -1, N2 = 19;
+	printf("Choose field\n1 - Record number, 2 - Destination, 3 - Company, 4 - Plane Type\n5 - Shedule Time, 6 - Expected Time, 7 - Passangers\n");
+	while ((c = getch()) > '7' || c < '0'){
+		CLEAN_CONSOLE;
+		PrintAnnot();
+		printf("Wrong symbol\n");
+	}
+
+	DB = ScanData(FileName, &Count, 0);
+	PrintInfo(DB, Count);
+	free(DB);
+}
+
 void MakeDataBase(char* FileName, char Sep)
 {
 	int count;
@@ -121,7 +138,7 @@ void AddRecord(char* FileName, char Sep) // adds new record to existing database
 
 void PrintInfo(char** Adr, int i) // prints array of strings
 {
-	printf("\nDATABASE:\nDestination | Company | Plane Type | Shedule Time | Expected Time | Passangers\n");
+	printf("\nDATABASE:\nRecord Number | Destination | Company | Plane Type | Shedule Time | Expected Time | Passangers\n");
 	int n = 0;
 	for (; n < i; n++)
 		printf("%d) %s\n", n + 1, Adr[n]);
@@ -248,6 +265,77 @@ void RedactRecord(char* FileName, int Number, char Sep)
 	free(Adr);
 }
 
+char** ScanNData(char* FileName, int *RecordCount, int Free, int* N1, int* N2) //reads records (from N1'th to N2'th) from database to the array of strings, if Free = 0, memory will not be free
+{
+	*N1-=1; *N2-=1;
+	if (*N1 > *N2) return;
+	if (*N1 < 0) *N1 = 0;
+	int i = 0, j = 0, c, Len = 0;
+	int Count = 0;
+	char** ArrData;
+	FILE *f = fopen(FileName, "r");
+
+	if (f == NULL)
+	{
+		printf("Database does not exist\n");
+		if (RecordCount != NULL)
+			*RecordCount = 0;
+		fclose(f);
+		return NULL;
+	}
+
+	while ((c = getc(f)) != EOF)
+	{
+		if (c != '\n'){
+			i++;
+		}
+		else if (i > Len){
+			Len = i;
+			i = 0;
+			Count++;
+		}
+		else
+		{
+			i = 0;
+			Count++;
+		}
+	}
+	Count++;
+
+	ArrData = (char**)malloc(Count * sizeof(char*));
+	for (i = 0; i < Count - 1; i++)
+		ArrData[i] = (char*)malloc(Len * sizeof(char));
+
+	i = 0;
+	fseek(f, 0, SEEK_SET);
+
+	while (j < *N1){
+		c = getc(f);
+		if (c == '\n') j++;
+	}
+	j = 0;
+	while ((c = getc(f)) != EOF && j <= *N2)
+	{
+		if (c != '\n'){
+			if (ArrData[j][i + 1] != EOF)
+				ArrData[j][i++] = c;
+		}
+		else{
+			ArrData[j++][i] = '\0';
+			i = 0;
+		}
+	}
+	//	ArrData[j][i] = '\0';
+	fclose(f);
+	if (RecordCount != NULL)
+		*RecordCount = j;
+	if (*N2 > j + *N1)
+		*N2 = j + *N1;
+	if (Free)
+		free(ArrData);
+	return ArrData;
+}
+
 char** ScanData(char* FileName, int *RecordCount, int Free) //reads data from database to the array of strings, if Free = 0, memory will not be free
 {
 	int i = 0, j = 0, c, Len = 0;
@@ -312,7 +400,7 @@ void PrintAnnot() // prints user interface in console
 {
 	printf("\nChoose your destiny:\n");
 	printf("0 - Clean console\n1 - Add new record\n2 - Print Database\n3 - Delete record\n");
-	printf("4 - Redact record\n5 - Make database\n6 - Search\n");
+	printf("4 - Redact record\n5 - Make database\n6 - Search\n7 - Sort database by field\n");
 	printf("Esc - Exit programm\n\n");
 }
 
@@ -333,9 +421,9 @@ void DeleteRecord(char* FileName, int Number) // deletes one record from databas
 	free(Adr);
 }
 
-void Menu(char* FileName) // user interface with choice
+void Menu(char* FileName, char Sep) // user interface with choice
 {
-	char c, Sep = '\t';
+	char c;
 	char** Adr = NULL;
 	int RecordCount, Num;
 	PrintAnnot();
@@ -383,15 +471,20 @@ void Menu(char* FileName) // user interface with choice
 			break;
 		case('5') :
 			MakeDataBase(FileName, '\t');
-			CLEAN_CONSOLE;
+			system("cls");
 			PrintAnnot();
 			break;
 		case('6') :
 			SearchByField(FileName);
 			PrintAnnot();
 			break;
+		case('7') :
+			SortByField(FileName);
+			break;
 		case(ESC) :
 			return;
+			printf("Smth strange happends\n");
+			break;
 		default:
 			break;
 		}
