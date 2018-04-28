@@ -12,7 +12,8 @@ void main()
 	}
 
 	char* FileName = "DataFile.txt";
+	char Sep = '\t';
 
-	Menu(FileName);
+	Menu(FileName, Sep);
 
 }
