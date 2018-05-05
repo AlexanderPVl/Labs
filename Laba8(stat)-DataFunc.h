@@ -46,4 +46,6 @@ void PrintAnnot();
 void PrintDatabase(char* FileName);
 void RedactRecord(char* FileName, int Num);
 void SearchByField(char* FileName);
-void SortByField(char* FileName, char Sep);
+void Sort(FILE* f, int RecSize, int To_Compare, int COUNT);
+void SortByField(char* FileName);
+void SwapRecords(char* FileName, int R1, int R2);
