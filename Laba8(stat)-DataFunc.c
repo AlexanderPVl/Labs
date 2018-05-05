@@ -16,20 +16,52 @@ size_t ScanStr(char* Dest) //WORKS
 	return i - 1;
 }
 
-char* StrSepCpy(char* Don, char* Dest, char Sep) // returns pointer on Separator
+void SwapRecords(FILE* f, int R1, int R2, int COUNT)
 {
-	RECORD Record;
-	int i = 0;
-	char c;
-	while ((c = *(Don + i)) != Sep && c != '\0') Dest[i++] = c;
-	Dest[i] = '\0';
-	if (c == '\0') return NULL;
-	return Don + i;
+	RECORD Record, BufRecord;
+	int RS = (int)RECORD_SIZE, offset;
+	if (R1 <= 0 || R2 <= 0 || R1 > COUNT || R2 > COUNT) { printf("Wrong indexes!\n"); fclose(f); return; }
+	offset = (R1 - 1)*RS; fseek(f, offset, SEEK_SET); READ_RECORD;
+	BufRecord = Record;
+	offset = (R2 - 1)*RS; fseek(f, offset, SEEK_SET); READ_RECORD;
+	offset = (R1 - 1)*RS; fseek(f, offset, SEEK_SET); WRITE_RECORD;
+	Record = BufRecord;
+	offset = (R2 - 1)*RS; fseek(f, offset, SEEK_SET); WRITE_RECORD;
 }
 
-void SortByField(char* FileName, char Sep)
+void Sort(FILE* f, int RecSize, char Ind, int COUNT)
 {
+	RECORD Record, BufRecord;
+	int i, j, offset, RS = (int)RECORD_SIZE;
+	for (i = 0; i < COUNT - 1; i++){
+		for (j = i + 1; j < COUNT; j++){
+			offset = i*RS; fseek(f, offset, SEEK_SET); READ_RECORD; BufRecord = Record;
+			offset = j*RS; fseek(f, offset, SEEK_SET); READ_RECORD;
+			switch (Ind)
+			{
+			case('1') : if (BufRecord.Flight_Num > Record.Flight_Num) SwapRecords(f, i + 1, j + 1, COUNT); break;
+			case('2') : if (_stricmp(BufRecord.Dest, Record.Dest) > 0) SwapRecords(f, i + 1, j + 1, COUNT); break;
+			case('3') : if (_stricmp(BufRecord.Comp, Record.Comp) > 0) SwapRecords(f, i + 1, j + 1, COUNT); break;
+			case('4') : if (_stricmp(BufRecord.Plane_Type, Record.Plane_Type) > 0) SwapRecords(f, i + 1, j + 1, COUNT); break;
+			case('5') : if ((BufRecord.Time.Exp_Hour > Record.Time.Exp_Hour) || ((BufRecord.Time.Exp_Hour == Record.Time.Exp_Hour) && (BufRecord.Time.Exp_Min > Record.Time.Exp_Min))) SwapRecords(f, i + 1, j + 1, COUNT); break;
+			case('6') : if ((BufRecord.Time.Shed_Hour > Record.Time.Shed_Hour) || ((BufRecord.Time.Shed_Hour == Record.Time.Shed_Hour) && (BufRecord.Time.Shed_Min > Record.Time.Shed_Min))) SwapRecords(f, i + 1, j + 1, COUNT); break;
+			case('7') : if (BufRecord.Pass > Record.Pass) SwapRecords(f, i + 1, j + 1, COUNT); break;
+			default: break;
+			}
+		}
+	}
+}
 
+void SortByField(char* FileName)
+{
+	RECORD Record, BufRecord;
+	char c;
+	int i, j, COUNT, offset, RS = (int)RECORD_SIZE;
+	FILE* f = fopen(FileName, "rb+");
+	FILE* SysFile; SCAN_COUNT;
+	printf("Choose field to sort:\n1 - Flight Number, 2 - Destination, 3 - Company, 4 - Plane type, 5 - Time by shedule, 6 - Expected time, 7 - Passengers\n");
+	Sort(f, RS, getch(), COUNT);
+	fclose(f);
 }
 
 void MakeDataBase(char* FileName, char Sep) //WORKS
@@ -72,13 +104,26 @@ void AddRecord(char* FileName) // adds new record to existing database (WORKS)
 	SysFile = fopen(SYS_FILE, "r+"); SCAN_INC_COUNT;
 	fclose(f); f = fopen(FileName, "rb+"); offset *= (COUNT - 1); fseek(f, offset, SEEK_SET);
 	SCAN_RECORD; WRITE_RECORD;
-	fclose(f);
-	fflush(f);
+	fclose(f); fflush(f);
 }
 
 void SearchByField(char* FileName) // prints recorsd with wanted field
 {
-
+	RECORD Record, BufRecord;
+	FILE *f, *SysFile;
+	int COUNT, j, RS = (int)RECORD_SIZE, offset;
+	SCAN_COUNT;
+	f = fopen(FileName, "rb");
+	printf("Enter fields. If field does not matter, print '-1'\n");
+	SCAN_RECORD; BufRecord = Record;
+	for (j = 0; j < COUNT; j++){
+		offset = j*RS; fseek(f, offset, SEEK_SET); READ_RECORD;
+		if ((Record.Flight_Num == BufRecord.Flight_Num || BufRecord.Flight_Num == -1) && (!_stricmp(Record.Dest, BufRecord.Dest) || !_stricmp(BufRecord.Dest, "-1")) && (_stricmp(Record.Comp, BufRecord.Comp) == 0 || _stricmp(BufRecord.Comp, "-1") == 0) && (!_stricmp(Record.Plane_Type, BufRecord.Plane_Type) || !_stricmp(BufRecord.Plane_Type, "-1")) && (!_stricmp(Record.Plane_Type, BufRecord.Plane_Type) || !_stricmp(BufRecord.Plane_Type, "-1")))
+			if ((Record.Time.Exp_Hour == Record.Time.Exp_Hour || Record.Time.Exp_Hour == -1) && (Record.Time.Exp_Min == BufRecord.Time.Exp_Min || BufRecord.Time.Exp_Min == -1))
+				if ((Record.Time.Shed_Hour == Record.Time.Shed_Hour || Record.Time.Shed_Hour == -1) && (Record.Time.Shed_Min == BufRecord.Time.Shed_Min || BufRecord.Time.Shed_Min == -1))
+					if ((Record.Pass == Record.Pass || Record.Pass == -1)){ fseek(f, offset, SEEK_SET); PRINT_RECORD; }
+	}
+	fclose(f);
 }
 
 void RedactRecord(char* FileName, int Num){
@@ -96,9 +141,7 @@ void RedactRecord(char* FileName, int Num){
 void PrintAnnot() // prints user interface in console
 {
 	printf("\nChoose your destiny:\n");
-	printf("0 - Clean console\n1 - Add new record\n2 - Print Database\n3 - Delete record\n");
-	printf("4 - Redact record\n5 - Make database\n6 - Search\n7 - Sort database by field\n");
-	printf("Esc - Exit programm\n\n");
+	printf("0 - Clean console\n1 - Add new record\n2 - Print Database\n3 - Delete record\n4 - Redact record\n5 - Make database\n6 - Search\n7 - Sort database by field\nEsc - Exit programm\n\n");
 }
 
 void DeleteRecord(char* FileName, int Number) // deletes one record from database
@@ -131,7 +174,7 @@ void Menu(char* FileName, char Sep) // user interface with choice
 	PrintAnnot();
 
 	while (1){
-		switch (c = getch())
+		switch (getch())
 		{
 		case ('0') :
 			CLEAN_CONSOLE; PrintAnnot();
@@ -161,7 +204,7 @@ void Menu(char* FileName, char Sep) // user interface with choice
 			SearchByField(FileName); PrintAnnot();
 			break;
 		case('7') :
-			SortByField(FileName, Sep); PrintAnnot();
+			SortByField(FileName); PrintAnnot();
 			break;
 		case(ESC) : return;
 		default: break;
