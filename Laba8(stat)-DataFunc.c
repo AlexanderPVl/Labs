@@ -7,6 +7,11 @@ size_t CHARPsize = sizeof(char*);
 size_t INTsize = sizeof(int);
 size_t STRsize = sizeof(char[WORD_SIZE]);
 
+void CheckSizeOfFile(char* FileName)
+{
+	FILE *f = fopen(FileName, "rb");
+}
+
 size_t ScanStr(char* Dest) //WORKS
 {
 	char c; int i = 0;
@@ -21,12 +26,10 @@ void SwapRecords(FILE* f, int R1, int R2, int COUNT)
 	RECORD Record, BufRecord;
 	int RS = (int)RECORD_SIZE, offset;
 	if (R1 <= 0 || R2 <= 0 || R1 > COUNT || R2 > COUNT) { printf("Wrong indexes!\n"); fclose(f); return; }
-	offset = (R1 - 1)*RS; READ_RECORD(f, offset);
-	BufRecord = Record;
-	offset = (R2 - 1)*RS; READ_RECORD(f, offset);
-	offset = (R1 - 1)*RS; WRITE_RECORD(f, offset);
-	Record = BufRecord;
-	offset = (R2 - 1)*RS; WRITE_RECORD(f, offset);
+	READ_RECORD(f, (R1 - 1)*RS); BufRecord = Record;
+	READ_RECORD(f, (R2 - 1)*RS);
+	WRITE_RECORD(f, (R1 - 1)*RS); Record = BufRecord;
+	WRITE_RECORD(f, (R2 - 1)*RS);
 }
 
 void Sort(FILE* f, int RecSize, char Ind, int COUNT)
@@ -35,8 +38,8 @@ void Sort(FILE* f, int RecSize, char Ind, int COUNT)
 	int i, j, offset, RS = (int)RECORD_SIZE;
 	for (i = 0; i < COUNT - 1; i++){
 		for (j = i + 1; j < COUNT; j++){
-			offset = i*RS; READ_RECORD(f,offset); BufRecord = Record;
-			offset = j*RS; READ_RECORD(f, offset);
+			READ_RECORD(f, i*RS); BufRecord = Record;
+			READ_RECORD(f, j*RS);
 			switch (Ind)
 			{
 			case('1') : if (BufRecord.Flight_Num > Record.Flight_Num) SwapRecords(f, i + 1, j + 1, COUNT); break;
@@ -58,7 +61,7 @@ void SortByField(char* FileName)
 	char c;
 	int i, j, COUNT, offset, RS = (int)RECORD_SIZE;
 	FILE* f = fopen(FileName, "rb+");
-	FILE* SysFile; SCAN_COUNT;
+	SCAN_COUNT;
 	printf("Choose field to sort:\n1 - Flight Number, 2 - Destination, 3 - Company, 4 - Plane type, 5 - Time by shedule, 6 - Expected time, 7 - Passengers\n");
 	Sort(f, RS, getch(), COUNT);
 	fclose(f);
@@ -89,7 +92,7 @@ void PrintDatabase(char* FileName) //WORKS
 	int COUNT;
 	RECORD Record;
 	FILE *f = fopen(FileName, "rb");
-	FILE *SysFile; SCAN_COUNT;
+	SCAN_COUNT;
 	printf("Count = %d\n", COUNT);
 	while (COUNT-- > 0){ READ_N_RECORD(f); PRINT_RECORD; }
 	fclose(f);
@@ -97,43 +100,44 @@ void PrintDatabase(char* FileName) //WORKS
 
 void AddRecord(char* FileName) // adds new record to existing database (WORKS)
 {
-	int COUNT, offset = (int)RECORD_SIZE;
+	int COUNT, RS = (int)RECORD_SIZE;
 	RECORD Record;
-	FILE *f = fopen(FileName, "rb"), *SysFile;
+	FILE *f = fopen(FileName, "rb");
 	if (f == NULL){ printf("DataBase does not exist\n"); return; }
-	SysFile = fopen(SYS_FILE, "r+"); SCAN_INC_COUNT;
-	fclose(f); f = fopen(FileName, "rb+"); offset *= (COUNT - 1);
-	SCAN_RECORD; WRITE_RECORD(f, offset);
+	SCAN_INC_COUNT;
+	fclose(f); f = fopen(FileName, "rb+");
+	SCAN_RECORD; WRITE_RECORD(f, RS*(COUNT - 1));
 	fclose(f); fflush(f);
 }
 
 void SearchByField(char* FileName) // prints recorsd with wanted field
 {
 	RECORD Record, BufRecord;
-	FILE *f, *SysFile;
-	int COUNT, j, RS = (int)RECORD_SIZE, offset;
+	FILE *f;
+	char Flag = 0;
+	int COUNT, j, RS = (int)RECORD_SIZE;
 	SCAN_COUNT;
 	f = fopen(FileName, "rb");
 	printf("Enter fields. If field does not matter, print '-1'\n");
 	SCAN_RECORD; BufRecord = Record;
 	for (j = 0; j < COUNT; j++){
-		offset = j*RS; READ_RECORD(f, offset);
+		READ_RECORD(f, j*RS);
 		if ((Record.Flight_Num == BufRecord.Flight_Num || BufRecord.Flight_Num == -1) && (!_stricmp(Record.Dest, BufRecord.Dest) || !_stricmp(BufRecord.Dest, "-1")) && (_stricmp(Record.Comp, BufRecord.Comp) == 0 || _stricmp(BufRecord.Comp, "-1") == 0) && (!_stricmp(Record.Plane_Type, BufRecord.Plane_Type) || !_stricmp(BufRecord.Plane_Type, "-1")) && (!_stricmp(Record.Plane_Type, BufRecord.Plane_Type) || !_stricmp(BufRecord.Plane_Type, "-1")))
-			if ((Record.Time.Exp_Hour == Record.Time.Exp_Hour || Record.Time.Exp_Hour == -1) && (Record.Time.Exp_Min == BufRecord.Time.Exp_Min || BufRecord.Time.Exp_Min == -1))
-				if ((Record.Time.Shed_Hour == Record.Time.Shed_Hour || Record.Time.Shed_Hour == -1) && (Record.Time.Shed_Min == BufRecord.Time.Shed_Min || BufRecord.Time.Shed_Min == -1))
-					if ((Record.Pass == Record.Pass || Record.Pass == -1)){ fseek(f, offset, SEEK_SET); PRINT_RECORD; }
+			if ((Record.Time.Exp_Hour == BufRecord.Time.Exp_Hour || BufRecord.Time.Exp_Hour == -1) && (Record.Time.Exp_Min == BufRecord.Time.Exp_Min || BufRecord.Time.Exp_Min == -1))
+				if ((Record.Time.Shed_Hour == BufRecord.Time.Shed_Hour || BufRecord.Time.Shed_Hour == -1) && (Record.Time.Shed_Min == BufRecord.Time.Shed_Min || BufRecord.Time.Shed_Min == -1))
+					if ((Record.Pass == BufRecord.Pass || BufRecord.Pass == -1)) { Flag = 1; fseek(f, j*RS, SEEK_SET); PRINT_RECORD };
 	}
+	if (!Flag)printf("No results!\n");
 	fclose(f);
 }
 
 void RedactRecord(char* FileName, int Num){
 	RECORD Record;
-	int COUNT, offset;
+	int COUNT, RS = (int)RECORD_SIZE;
 	FILE* f = fopen(FileName, "rb+");
-	FILE* SysFile; SCAN_COUNT;
+	SCAN_COUNT;
 	if (Num <= 0 || Num > COUNT){ printf("Wrong number!\n"); fclose(f); return; }
-	offset = (int)RECORD_SIZE; offset *= (Num - 1);
-	SCAN_RECORD; WRITE_RECORD(f, offset);
+	SCAN_RECORD; WRITE_RECORD(f, RS*(Num - 1));
 	fflush(f); fclose(f);
 }
 
@@ -150,7 +154,6 @@ void DeleteRecord(char* FileName, int Number) // deletes one record from databas
 	int i = 0, RS = (int)RECORD_SIZE, COUNT, offset;
 	char** Adr = NULL;
 	FILE* f = fopen(FileName, "rb+");
-	FILE* SysFile;
 	SCAN_DEC_COUNT;
 	if (Number > COUNT + 1 || Number <= 0){ SCAN_INC_COUNT; printf("Wrong number!\n"); return; }
 
@@ -158,8 +161,8 @@ void DeleteRecord(char* FileName, int Number) // deletes one record from databas
 	handle = fileno(f);
 	if (Number == COUNT + 1){ /*chsize(handle, count*RECORD_SIZE);*/; fclose(f); return; }
 	do{
-		offset = RS*Number; READ_RECORD(f, offset);
-		offset = RS*(Number - 1); WRITE_RECORD(f, offset);
+		READ_RECORD(f, RS*Number);
+		WRITE_RECORD(f, RS*(Number - 1));
 	} while (Number++ < COUNT);
 	/*chsize(handle, 0 * RECORD_SIZE);*/ fclose(f);
 	fflush(f);
@@ -176,7 +179,7 @@ void Menu(char* FileName, char Sep) // user interface with choice
 		switch (getch())
 		{
 		case ('0') :
-			CLEAN_CONSOLE; PrintAnnot();
+			system("cls"); PrintAnnot();
 			break;
 		case ('1') :
 			AddRecord(FileName); PrintAnnot();
@@ -197,7 +200,7 @@ void Menu(char* FileName, char Sep) // user interface with choice
 			PrintAnnot();
 			break;
 		case('5') :
-			MakeDataBase(FileName, '\t'); CLEAN_CONSOLE; PrintAnnot();
+			MakeDataBase(FileName, '\t'); system("cls"); PrintAnnot();
 			break;
 		case('6') :
 			SearchByField(FileName); PrintAnnot();
