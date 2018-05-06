@@ -14,6 +14,8 @@ void main()
 	char* FileName = "DataFile.bin";
 	char Sep = '\t';
 
+	CheckSizeOfFile(FileName);
+
 	Menu(FileName, Sep);
 
 }
