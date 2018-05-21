@@ -22,5 +22,6 @@ typedef struct _NODE NODE;
 HEAD* MakeList(int count);
 int DeleteList(HEAD* head);
 int AddNode(HEAD* head);
+int AddNode2(HEAD* head);
 int PrintList(HEAD* head);
 HEAD* FormNew(HEAD* head1, HEAD* head2);
