@@ -68,7 +68,7 @@ void SwapRecords(FILE* f, int R1, int R2, int COUNT)
 	WRITE_RECORD(f, (R2 - 1)*RS);
 }
 
-void Sort(FILE* f, int RecSize, char Ind, int COUNT)
+void Sort(FILE* f, int RecSize, char Ind, int COUNT, int True)
 {
 	RECORD Record, BufRecord;
 	int i, j, offset, RS = (int)RECORD_SIZE;
@@ -78,13 +78,13 @@ void Sort(FILE* f, int RecSize, char Ind, int COUNT)
 			READ_RECORD(f, j*RS);
 			switch (Ind)
 			{
-			case('1') : if (BufRecord.Flight_Num > Record.Flight_Num) SwapRecords(f, i + 1, j + 1, COUNT); break;
-			case('2') : if (_stricmp(BufRecord.Dest, Record.Dest) > 0) SwapRecords(f, i + 1, j + 1, COUNT); break;
-			case('3') : if (_stricmp(BufRecord.Comp, Record.Comp) > 0) SwapRecords(f, i + 1, j + 1, COUNT); break;
-			case('4') : if (_stricmp(BufRecord.Plane_Type, Record.Plane_Type) > 0) SwapRecords(f, i + 1, j + 1, COUNT); break;
-			case('5') : if ((BufRecord.Time.Exp_Hour > Record.Time.Exp_Hour) || ((BufRecord.Time.Exp_Hour == Record.Time.Exp_Hour) && (BufRecord.Time.Exp_Min > Record.Time.Exp_Min))) SwapRecords(f, i + 1, j + 1, COUNT); break;
-			case('6') : if ((BufRecord.Time.Shed_Hour > Record.Time.Shed_Hour) || ((BufRecord.Time.Shed_Hour == Record.Time.Shed_Hour) && (BufRecord.Time.Shed_Min > Record.Time.Shed_Min))) SwapRecords(f, i + 1, j + 1, COUNT); break;
-			case('7') : if (BufRecord.Pass > Record.Pass) SwapRecords(f, i + 1, j + 1, COUNT); break;
+			case('1') : if (BufRecord.Flight_Num > Record.Flight_Num == True) SwapRecords(f, i + 1, j + 1, COUNT); break;
+			case('2') : if (_stricmp(BufRecord.Dest, Record.Dest) > 0 == True) SwapRecords(f, i + 1, j + 1, COUNT); break;
+			case('3') : if (_stricmp(BufRecord.Comp, Record.Comp) > 0 == True) SwapRecords(f, i + 1, j + 1, COUNT); break;
+			case('4') : if (_stricmp(BufRecord.Plane_Type, Record.Plane_Type) > 0 == True) SwapRecords(f, i + 1, j + 1, COUNT); break;
+			case('5') : if ((BufRecord.Time.Exp_Hour > Record.Time.Exp_Hour == True) || ((BufRecord.Time.Exp_Hour == Record.Time.Exp_Hour == True) && (BufRecord.Time.Exp_Min > Record.Time.Exp_Min == True))) SwapRecords(f, i + 1, j + 1, COUNT); break;
+			case('6') : if ((BufRecord.Time.Shed_Hour > Record.Time.Shed_Hour == True) || ((BufRecord.Time.Shed_Hour == Record.Time.Shed_Hour == True) && (BufRecord.Time.Shed_Min > Record.Time.Shed_Min == True))) SwapRecords(f, i + 1, j + 1, COUNT); break;
+			case('7') : if (BufRecord.Pass > Record.Pass == True) SwapRecords(f, i + 1, j + 1, COUNT); break;
 			default: break;
 			}
 		}
@@ -95,14 +95,16 @@ void SortByField(char* FileName)
 {
 	RECORD Record, BufRecord;
 	char c;
-	int i, j, COUNT, offset, RS = (int)RECORD_SIZE;
+	int i, j, COUNT, offset, RS = (int)RECORD_SIZE, Tr;
 	FILE* f = fopen(FileName, "rb"), *SysFile;
 	if (f == NULL){ printf("DataBase does not exist\n"); return; }
 
 	f = fopen(FileName, "rb+");
 	SCAN_COUNT;
+	printf("Tap 1 to sort UP, 0 to sort DOWN\n");
+	Tr = getch() - '0';
 	printf("Choose field to sort:\n1 - Flight Number, 2 - Destination, 3 - Company, 4 - Plane type, 5 - Time by shedule, 6 - Expected time, 7 - Passengers\n");
-	Sort(f, RS, getch(), COUNT);
+	Sort(f, RS, getch(), COUNT, Tr);
 	fclose(f);
 }
 
@@ -118,7 +120,7 @@ int MakeDataBase(char* FileName, char Sep) //WORKS
 	}
 
 	f = fopen(FileName, "wb");
-	printf("Enter number of records:\n"); IntScanf("%d", &COUNT);
+	printf("Enter number of records:\n"); IntScanf(&COUNT);
 	PUT_COUNT(COUNT);
 	while (COUNT-- > 0){ SCAN_RECORD; WRITE_N_RECORD(f); }
 
