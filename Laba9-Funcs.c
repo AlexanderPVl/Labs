@@ -63,6 +63,24 @@ int DeleteList(HEAD* head)
 	return 0;
 }
 
+int AddNode2(HEAD* head)
+{
+	int count = head->Count, i;
+	int deg, koeff;
+	NODE* next;
+	if (!head)return(-1);
+	head->Count += 1;
+	next = (NODE*)malloc(NODE_SIZE);
+	next->Next = head->First;
+	head->First = next;
+	next = head->First;
+	printf("Enter Degree and Koefficient\n");
+	scanf("%d", &deg);
+	scanf("%d", &koeff);
+	next->Deg = deg;
+	next->Koeff = koeff;
+}
+
 int AddNode(HEAD* head)
 {
 	int count = head->Count, i;
