@@ -23,20 +23,24 @@ void main()
 	NODE* List1 = MakeList();
 	NODE* List2 = MakeList();
 	NODE* List3 = MakeList();
+	NODE* List4 = MakeList();
 
 	for (i = 0; i < 7; i++)
 		AddNode(&List1, i + 1, i + 1);
 	for (i = 0; i < 7; i++)
 		AddNode(&List2, i + 5, i + 5);
 	MakeNewPoly(List1, List2, &List3);
+	MakeNowPoly2(List1, List2, &List4);
 
 	PrintList(List1, "F1");
 	PrintList(List2, "F2");
 	PrintList(List3, "F3");
+	PrintList(List4, "F4");
 
 	Delete(List1);
 	Delete(List2);
 	Delete(List3);
+	Delete(List4);
 }
 
 int CheckDegree(int deg, int koeff, NODE* head)
@@ -114,5 +118,15 @@ NODE* MakeNewPoly(NODE* head1, NODE* head2, NODE** head3)
 
 void MakeNowPoly2(NODE* head1, NODE* head2, NODE** head3)
 {
-
+	NODE* nod;
+	nod = head1->Next;
+	while (nod){
+		if (nod->Deg % 2 == 0)AddNode(head3, nod->Deg, nod->Koeff);
+		nod = nod->Next;
+	}
+	nod = head2->Next;
+	while (nod){
+		if (nod->Deg % 2)AddNode(head3, nod->Deg, nod->Koeff);
+		nod = nod->Next;
+	}
 }
