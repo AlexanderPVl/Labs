@@ -99,16 +99,14 @@ NODE* MakeNewPoly(NODE* head1, NODE* head2, NODE** head3)
 
 	while (nod2 != NULL)
 	{
-		nod1 = head1;
 		fl = 0;
+		nod1 = head1;
 		while (nod1 != NULL)
 		{
 			if (nod1->Deg == nod2->Deg)fl = 1;
 			nod1 = nod1->Next;
 		}
-		if (!fl)
-			AddNode(head3, nod2->Deg, nod2->Koeff);
+		if (!fl) AddNode(head3, nod2->Deg, nod2->Koeff);
 		nod2 = nod2->Next;
-
 	}
 }
