@@ -82,13 +82,14 @@ void Sort(FILE* f, int RecSize, char Ind, int COUNT, int True)
 			case('2') : if (_stricmp(BufRecord.Dest, Record.Dest) > 0 == True) SwapRecords(f, i + 1, j + 1, COUNT); break;
 			case('3') : if (_stricmp(BufRecord.Comp, Record.Comp) > 0 == True) SwapRecords(f, i + 1, j + 1, COUNT); break;
 			case('4') : if (_stricmp(BufRecord.Plane_Type, Record.Plane_Type) > 0 == True) SwapRecords(f, i + 1, j + 1, COUNT); break;
-			case('5') : if ((BufRecord.Time.Exp_Hour > Record.Time.Exp_Hour == True) || ((BufRecord.Time.Exp_Hour == Record.Time.Exp_Hour == True) && (BufRecord.Time.Exp_Min > Record.Time.Exp_Min == True))) SwapRecords(f, i + 1, j + 1, COUNT); break;
-			case('6') : if ((BufRecord.Time.Shed_Hour > Record.Time.Shed_Hour == True) || ((BufRecord.Time.Shed_Hour == Record.Time.Shed_Hour == True) && (BufRecord.Time.Shed_Min > Record.Time.Shed_Min == True))) SwapRecords(f, i + 1, j + 1, COUNT); break;
+			case('5') : if ((BufRecord.Time.Exp_Hour > Record.Time.Exp_Hour == True) || (((BufRecord.Time.Exp_Hour == Record.Time.Exp_Hour)) && (BufRecord.Time.Exp_Min > Record.Time.Exp_Min == True))) SwapRecords(f, i + 1, j + 1, COUNT); break;
+			case('6') : if ((BufRecord.Time.Shed_Hour > Record.Time.Shed_Hour == True) || ((BufRecord.Time.Shed_Hour == Record.Time.Shed_Hour) && (BufRecord.Time.Shed_Min > Record.Time.Shed_Min == True))) SwapRecords(f, i + 1, j + 1, COUNT); break;
 			case('7') : if (BufRecord.Pass > Record.Pass == True) SwapRecords(f, i + 1, j + 1, COUNT); break;
 			default: break;
 			}
 		}
 	}
+	PrintDatabase(DB_FILE_NAME);
 }
 
 void SortByField(char* FileName)
@@ -166,12 +167,13 @@ void SearchByField(char* FileName) // prints recorsd with wanted field
 
 	printf("Enter fields. If field does not matter, print '-1'\n");
 	SCAN_RECORD; BufRecord = Record;
+	printf("\nResult:\n");
 	for (j = 0; j < COUNT; j++){
 		READ_RECORD(f, j*RS);
 		if ((Record.Flight_Num == BufRecord.Flight_Num || BufRecord.Flight_Num == -1) && (!_stricmp(Record.Dest, BufRecord.Dest) || !_stricmp(BufRecord.Dest, "-1")) && (_stricmp(Record.Comp, BufRecord.Comp) == 0 || _stricmp(BufRecord.Comp, "-1") == 0) && (!_stricmp(Record.Plane_Type, BufRecord.Plane_Type) || !_stricmp(BufRecord.Plane_Type, "-1")) && (!_stricmp(Record.Plane_Type, BufRecord.Plane_Type) || !_stricmp(BufRecord.Plane_Type, "-1")))
-			if ((Record.Time.Exp_Hour == BufRecord.Time.Exp_Hour || BufRecord.Time.Exp_Hour == -1) && (Record.Time.Exp_Min == BufRecord.Time.Exp_Min || BufRecord.Time.Exp_Min == -1))
-				if ((Record.Time.Shed_Hour == BufRecord.Time.Shed_Hour || BufRecord.Time.Shed_Hour == -1) && (Record.Time.Shed_Min == BufRecord.Time.Shed_Min || BufRecord.Time.Shed_Min == -1))
-					if ((Record.Pass == BufRecord.Pass || BufRecord.Pass == -1)) { Flag = 1; fseek(f, j*RS, SEEK_SET); PRINT_RECORD };
+		if ((Record.Time.Exp_Hour == BufRecord.Time.Exp_Hour || BufRecord.Time.Exp_Hour == -1) && (Record.Time.Exp_Min == BufRecord.Time.Exp_Min || BufRecord.Time.Exp_Min == -1))
+		if ((Record.Time.Shed_Hour == BufRecord.Time.Shed_Hour || BufRecord.Time.Shed_Hour == -1) && (Record.Time.Shed_Min == BufRecord.Time.Shed_Min || BufRecord.Time.Shed_Min == -1))
+		if ((Record.Pass == BufRecord.Pass || BufRecord.Pass == -1)) { Flag = 1; fseek(f, j*RS, SEEK_SET); PRINT_RECORD };
 	}
 	if (!Flag)printf("No results!\n");
 	fclose(f);
@@ -183,7 +185,7 @@ void RedactRecord(char* FileName){
 	FILE* f = fopen(FileName, "rb"), *SysFile;
 	if (f == NULL){ printf("DataBase does not exist\n"); return; }
 
-	printf("Choose record (enter number):\n"); IntScanf("%d", &Num);
+	printf("Choose record (enter number):\n"); IntScanf(&Num);
 	f = fopen(FileName, "rb+");
 	SCAN_COUNT;
 	if (Num <= 0 || Num > COUNT){ printf("Wrong number!\n"); fclose(f); return; }
@@ -212,7 +214,7 @@ void DeleteRecord(char* FileName) // deletes one record from database
 	if (Number > COUNT + 1 || Number <= 0){ SCAN_INC_COUNT; printf("Wrong number!\n"); return; }
 
 	handle = fileno(f);
-	if (Number == COUNT + 1){; fclose(f); return; }
+	if (Number == COUNT + 1){ ; fclose(f); return; }
 	do{
 		READ_RECORD(f, RS*Number);
 		WRITE_RECORD(f, RS*(Number - 1));
