@@ -14,7 +14,8 @@ NODE* MakeList();
 NODE* AddNode(NODE* head, int deg, int koeff);
 void PrintList(NODE* head);
 void Delete(NODE* head);
-NODE* MakeNewPoly(NODE* head1, NODE* head2);
+NODE* MakeNewPoly(NODE* head1, NODE* head2, NODE** head3);
+void MakeNowPoly2(NODE* head1, NODE* head2, NODE** head3);
 
 void main()
 {
@@ -109,4 +110,9 @@ NODE* MakeNewPoly(NODE* head1, NODE* head2, NODE** head3)
 		if (!fl) AddNode(head3, nod2->Deg, nod2->Koeff);
 		nod2 = nod2->Next;
 	}
+}
+
+void MakeNowPoly2(NODE* head1, NODE* head2, NODE** head3)
+{
+
 }
