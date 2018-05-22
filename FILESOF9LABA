@@ -68,9 +68,10 @@ void Delete(NODE* head)
 	}
 }
 
-MakeNewPoly(NODE* Node1, NODE* Node2)
+MakeNewPoly(NODE* head1, NODE* head2)
 {
-
+	NODE* nod1 = head1;
+	NODE* nod2 = head2;
 }
 
 =========================================================================================================
