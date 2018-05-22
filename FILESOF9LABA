@@ -6,20 +6,18 @@
 #include <stdio.h>
 #include <malloc.h>
 
-struct _NODE
+typedef struct NODE
 {
-	struct _NODE* Next;
+	struct NODE* Next;
 	int Deg;
 	int Koeff;
-};
-
-typedef struct _NODE NODE;
+} NODE;
 
 NODE* MakeList();
 NODE* AddNode(NODE* head, int deg, int koeff);
 void PrintList(NODE* head);
 void Delete(NODE* head);
-MakeNewPoly(NODE* Node1, NODE* Node2);
+NODE* MakeNewPoly(NODE* head1, NODE* head2);
 
 =========================================================================================================
 =========================================================================================================
@@ -31,6 +29,16 @@ MakeNewPoly(NODE* Node1, NODE* Node2);
 
 int NODE_SIZE = (int)sizeof(NODE);
 
+int CheckDegree(int deg, int koeff, NODE* head)
+{
+	while (head)
+	{
+		if (head->Deg == deg){ head->Koeff += koeff; return 0; }
+		head = head->Next;
+	}
+	return 1;
+}
+
 NODE* MakeList()
 {
 	NODE* Node = (NODE*)malloc(NODE_SIZE);
@@ -39,6 +47,7 @@ NODE* MakeList()
 
 NODE* AddNode(NODE** head, int deg, int koeff)
 {
+	if (!CheckDegree(deg, koeff, head))return NULL;
 	NODE* NewHead = (NODE*)malloc(NODE_SIZE);
 	(*head)->Koeff = koeff;
 	(*head)->Deg = deg;
@@ -46,18 +55,24 @@ NODE* AddNode(NODE** head, int deg, int koeff)
 	(*head) = NewHead;
 }
 
-void PrintList(NODE* head)
+void PrintList(NODE* head, char* Name)
 {
+	if (!head){ printf("%s = 0", Name); return; }
 	NODE* next = head->Next;
+	printf("%s(X) = ", Name);
+	if (!next)printf("0");
 	while (next != NULL)
 	{
-		printf("%d*X^%d\n", next->Koeff, next->Deg);
+		printf("%d*X^%d", next->Koeff, next->Deg);
+		if (next->Next)printf(" + ");
 		next = next->Next;
 	}
+	printf("\n");
 }
 
 void Delete(NODE* head)
 {
+	if (!head)return;
 	NODE* buf, *next = head;
 	buf = head;
 	while (next != NULL)
@@ -68,28 +83,24 @@ void Delete(NODE* head)
 	}
 }
 
-MakeNewPoly(NODE* head1, NODE* head2)
+NODE* MakeNewPoly(NODE* head1, NODE* head2, NODE** head3)
 {
-	NODE* nod1 = head1;
-	NODE* nod2 = head2;
-}
+	int fl;
+	NODE *nod1, *nod2 = head2;
 
-MakeNewPoly(NODE* head1, NODE* head2)
-{
-	int fl = 0;
-	NODE* nod2 = head2;
 	while (nod2 != NULL)
 	{
-		NODE* nod1 = head1;
+		nod1 = head1;
+		fl = 0;
 		while (nod1 != NULL)
 		{
-			if (nod1->Deg = nod2->Deg)fl = 1;
-			printf("%d*X^%d\n", nod2->Koeff, nod2->Deg);
+			if (nod1->Deg == nod2->Deg)fl = 1;
 			nod1 = nod1->Next;
 		}
+		if (!fl)
+			AddNode(head3, nod2->Deg, nod2->Koeff);
 		nod2 = nod2->Next;
-	}
-	printf("Here");
+	
 }
 
 =========================================================================================================
@@ -100,15 +111,22 @@ MakeNewPoly(NODE* head1, NODE* head2)
 
 void main()
 {
+	int i;
 	NODE* List1 = MakeList();
 	NODE* List2 = MakeList();
+	NODE* List3 = MakeList();
 
-	AddNode(&List1, 1, 1);
-	AddNode(&List2, 1, 1);
+	for (i = 0; i < 7; i++)
+		AddNode(&List1, i + 1, i + 1);
+	for (i = 0; i < 7; i++)
+		AddNode(&List2, i + 5, i + 5);
+	MakeNewPoly(List1, List2, &List3);
 
-	PrintList(List1);
-	PrintList(List2);
+	PrintList(List1, "F1");
+	PrintList(List2, "F2");
+	PrintList(List3, "F3");
 
 	Delete(List1);
 	Delete(List2);
+	Delete(List3);
 }
