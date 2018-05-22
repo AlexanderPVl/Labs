@@ -13,6 +13,14 @@ void main()
 
 	char* FileName = DB_FILE_NAME;
 	char Sep = '\t';
+	int COUNT, INTsize = sizeof(int);
+	FILE* SysFile = fopen(SYS_FILE, "rb");
+	if (!SysFile){
+		FILE* SysFile = fopen(SYS_FILE, "wb");
+		COUNT = 0;
+		PUT_COUNT(COUNT);
+	}
+	fclose(SysFile);
 
 	CheckSizeOfFile(FileName);
 
