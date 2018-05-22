@@ -1,0 +1,95 @@
+=========================================================================================================
+=========================================================================================================
+=========================================================================================================
+#pragma once
+
+#include <stdio.h>
+#include <malloc.h>
+
+struct _NODE
+{
+	struct _NODE* Next;
+	int Deg;
+	int Koeff;
+};
+
+typedef struct _NODE NODE;
+
+NODE* MakeList();
+NODE* AddNode(NODE* head, int deg, int koeff);
+void PrintList(NODE* head);
+void Delete(NODE* head);
+MakeNewPoly(NODE* Node1, NODE* Node2);
+
+=========================================================================================================
+=========================================================================================================
+=========================================================================================================
+
+#pragma once
+
+#include "Struct.h"
+
+int NODE_SIZE = (int)sizeof(NODE);
+
+NODE* MakeList()
+{
+	NODE* Node = (NODE*)malloc(NODE_SIZE);
+	Node->Next = NULL;
+}
+
+NODE* AddNode(NODE** head, int deg, int koeff)
+{
+	NODE* NewHead = (NODE*)malloc(NODE_SIZE);
+	(*head)->Koeff = koeff;
+	(*head)->Deg = deg;
+	NewHead->Next = (*head);
+	(*head) = NewHead;
+}
+
+void PrintList(NODE* head)
+{
+	NODE* next = head->Next;
+	while (next != NULL)
+	{
+		printf("%d*X^%d\n", next->Koeff, next->Deg);
+		next = next->Next;
+	}
+}
+
+void Delete(NODE* head)
+{
+	NODE* buf, *next = head;
+	buf = head;
+	while (next != NULL)
+	{
+		next = buf->Next;
+		free(buf);
+		buf = next;
+	}
+}
+
+MakeNewPoly(NODE* Node1, NODE* Node2)
+{
+
+}
+
+=========================================================================================================
+=========================================================================================================
+=========================================================================================================
+
+#include "Struct.h"
+
+void main()
+{
+	NODE* List1 = MakeList();
+	NODE* List2 = MakeList();
+
+	AddNode(&List1, 1, 1);
+	AddNode(&List2, 1, 1);
+
+	PrintList(List1);
+	PrintList(List2);
+
+	Delete(List1);
+	Delete(List2);
+}
