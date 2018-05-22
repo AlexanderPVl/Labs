@@ -22,6 +22,7 @@ void IntScanf(int* Num)
 	}
 	putchar('\n');
 	*Num = Buf;
+	return;
 }
 
 void CheckSizeOfFile(char* FileName)
@@ -50,11 +51,22 @@ void CheckSizeOfFile(char* FileName)
 
 size_t ScanStr(char* Dest) //WORKS
 {
+#if 0
 	char c; int i = 0;
 	while ((c = getch()) == 13);
 	do{ putch(c); Dest[i] = c; } while (i++ < WORD_SIZE && (c = getch()) != 13);
-	putch('\n'); Dest[i] = '\0';
+	Dest[i] = '\0';
+	if (i >= WORD_SIZE - 1)while (getch() != 13);
+	putch('\n');
 	return i - 1;
+#endif
+	size_t len = 0;
+	fgets(Dest, WORD_SIZE, stdin);
+	len = strlen(Dest);
+	if (len == WORD_SIZE - 1) while (getchar() != '\n');
+	if (len > 0 && Dest[len - 1] == '\n') Dest[--len] = 0;
+	if (len > 0 && Dest[len - 1] == '\r') Dest[--len] = 0;
+	return len;
 }
 
 void SwapRecords(FILE* f, int R1, int R2, int COUNT)
