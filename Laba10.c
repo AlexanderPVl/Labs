@@ -30,7 +30,7 @@ void EnterStr(LIST* list);
 void Task(LIST* list);
 
 
-void main()
+int main()
 {
 
 	LIST* list1 = MakeList("List1");
@@ -41,6 +41,7 @@ void main()
 	PrintList(list1);
 
 	DeleteList(list1);
+	return 0;
 }
 
 void Task(LIST* list)
@@ -173,7 +174,7 @@ void PrintList(LIST* list)
 	printf("\n%s: ", list->Name);
 	while (next->Next != NULL)
 	{
-		printf("%s, ", next->Str);
+		printf("%s ", next->Str);
 		next = next->Next;
 	}
 	printf("%s. Number of elements = %d", next->Str, list->Count);
@@ -187,9 +188,68 @@ void DeleteNode(LIST* list, int ind)
 	if (!list){ printf("List does not exist\n"); return; }
 	if (!list->HEAD){ printf("List is empty\n"); return; }
 	if (ind <= 0){ printf("\nIncorrect index! Could not delete NODE in \"%s\".\n", list->Name); return; }
+	if (ind > list->Count){ printf("\nIncorrect index! Could not delete NODE in \"%s\".\n", list->Name); return; }
 
-	next = list->HEAD;
+	if (list->Count == 1)
+	{
+		free(list->HEAD);
+		list->HEAD = NULL;
+		list->Count--;
+		return;
+	}
 	if (ind == 1)
+	{
+		if (list->Count == 2)
+		{
+			list->HEAD = list->TAIL;
+			list->HEAD->Prev = NULL;
+			free(list->TAIL);
+			list->TAIL = NULL;
+			return;
+		}
+		next = list->HEAD->Next;
+		free(list->HEAD);
+		list->HEAD = next;
+		list->HEAD->Prev = NULL;
+		list->Count--;
+		return;
+	}
+	if (ind == list->Count)
+	{
+		if (list->Count == 2)
+		{
+			free(list->TAIL);
+			list->TAIL = NULL;
+			list->HEAD->Next = NULL;
+			list->Count--;
+			return;
+		}
+		else
+		{
+			next = list->TAIL->Prev;
+			free(list->TAIL);
+			list->TAIL = next;
+			list->Count--;
+			return;
+		}
+	}
+	else
+	{
+		next = list->HEAD;
+		for (i = 1; i < ind; i++)
+		{
+			next = next->Next;
+		}
+		cur = next->Prev;
+		cur->Next = next->Next;
+		cur = next->Next;
+		cur->Prev = next->Prev;
+		free(next);
+		list->Count--;
+		return;
+	}
+
+	/*if (ind == 1)
 	{
 		next = next->Next;
 		free(list->HEAD);
@@ -236,6 +296,6 @@ void DeleteNode(LIST* list, int ind)
 		free(list->TAIL->Next);
 		list->TAIL->Next = NULL;
 		list->Count--;
-	}
+	}*/
 
 }
