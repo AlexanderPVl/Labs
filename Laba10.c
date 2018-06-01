@@ -23,11 +23,11 @@ LIST* MakeList(char* name);
 void DeleteList(LIST* list);
 void DeleteNode(LIST* list, int ind);
 void PrintList(LIST* list);
-void AddNodeToHead(LIST* list, char val);
+void AddNodeToHead(LIST* list, char* val);
 void AddNodeToTail(LIST* list, char* val);
 void AddNodeToPos(LIST* list, int pos, char* val);
 void EnterStr(LIST* list);
-void Task(LIST* list, int Count);
+void Task(LIST* list);
 
 
 void main()
@@ -37,20 +37,23 @@ void main()
 
 	EnterStr(list1);
 	PrintList(list1);
-	Task(list1, 3);
+	Task(list1);
 	PrintList(list1);
 
 	DeleteList(list1);
 }
 
-void Task(LIST* list, int Count)
+void Task(LIST* list)
 {
+	int count;
+	printf("enter lenght of words to delete\n");
+	scanf("%d", &count);
 	if (!list){ printf("List does not exist\n"); return; }
 	if (!list->HEAD){ printf("List \"%s\" is emmpty\n", list->Name); return; }
 	NODE* next = list->HEAD;
 	int i = 1;
 	while (next){
-		if (strlen(next->Str) == Count)
+		if (strlen(next->Str) == count)
 		{
 			next = next->Next;
 			DeleteNode(list, i--);
@@ -63,6 +66,7 @@ void Task(LIST* list, int Count)
 
 void EnterStr(LIST* list)
 {
+	printf("Enter string:\n");
 	char* word = (char*)malloc(WRD_LN*sizeof(char));
 	char c = '0', i = 0;
 	while ((c = getchar()) != '.')
