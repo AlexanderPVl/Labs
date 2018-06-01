@@ -67,7 +67,7 @@ void Task(LIST* list)
 void EnterStr(LIST* list)
 {
 	printf("Enter string:\n");
-	char* word = (char*)malloc(WRD_LN*sizeof(char));
+	char word[WRD_LN];
 	char c = '0', i = 0;
 	while ((c = getchar()) != '.')
 	{
@@ -81,7 +81,6 @@ void EnterStr(LIST* list)
 	}
 	word[i] = '\0';
 	AddNodeToTail(list, word);
-	free(word);
 }
 
 LIST* MakeList(char* name)
@@ -238,4 +237,5 @@ void DeleteNode(LIST* list, int ind)
 		list->TAIL->Next = NULL;
 		list->Count--;
 	}
+
 }
