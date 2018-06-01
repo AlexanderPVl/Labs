@@ -201,10 +201,12 @@ void DeleteNode(LIST* list, int ind)
 	{
 		if (list->Count == 2)
 		{
+			next = list->HEAD;
 			list->HEAD = list->TAIL;
 			list->HEAD->Prev = NULL;
-			free(list->TAIL);
+			free(next);
 			list->TAIL = NULL;
+			list->Count--;
 			return;
 		}
 		next = list->HEAD->Next;
