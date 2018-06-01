@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define WRD_LN 10
+#define WRD_LN 30
 #define NAME_LN 10
 
 typedef struct NODE{
@@ -26,32 +26,58 @@ void PrintList(LIST* list);
 void AddNodeToHead(LIST* list, char val);
 void AddNodeToTail(LIST* list, char* val);
 void AddNodeToPos(LIST* list, int pos, char* val);
+void EnterStr(LIST* list);
+void Task(LIST* list, int Count);
+
 
 void main()
 {
+
 	LIST* list1 = MakeList("List1");
-	LIST* list2 = MakeList("List2");
 
-	AddNodeToTail(list1, "1"); PrintList(list1);
-	AddNodeToTail(list1, "2"); PrintList(list1);
-	AddNodeToTail(list1, "3"); PrintList(list1);
-	AddNodeToTail(list1, "4"); PrintList(list1);
-	AddNodeToTail(list1, "5"); PrintList(list1);
-
-
-
-	AddNodeToHead(list1, "2"); PrintList(list1);
-	AddNodeToHead(list1, "3"); PrintList(list1);
-	AddNodeToHead(list1, "4"); PrintList(list1);
-
-	DeleteNode(list1, 8);
-
-	AddNodeToHead(list1, "5"); PrintList(list1);
-
-
+	EnterStr(list1);
+	PrintList(list1);
+	Task(list1, 3);
+	PrintList(list1);
 
 	DeleteList(list1);
-	DeleteList(list2);
+}
+
+void Task(LIST* list, int Count)
+{
+	if (!list){ printf("List does not exist\n"); return; }
+	if (!list->HEAD){ printf("List \"%s\" is emmpty\n", list->Name); return; }
+	NODE* next = list->HEAD;
+	int i = 1;
+	while (next){
+		if (strlen(next->Str) == Count)
+		{
+			next = next->Next;
+			DeleteNode(list, i--);
+		}
+		else
+			next = next->Next;
+		i++;
+	}
+}
+
+void EnterStr(LIST* list)
+{
+	char* word = (char*)malloc(WRD_LN*sizeof(char));
+	char c = '0', i = 0;
+	while ((c = getchar()) != '.')
+	{
+		if (c == ' '){
+			word[i] = '\0';
+			AddNodeToTail(list, word);
+			i = 0;
+		}
+		else
+			word[i++] = c;
+	}
+	word[i] = '\0';
+	AddNodeToTail(list, word);
+	free(word);
 }
 
 LIST* MakeList(char* name)
@@ -136,12 +162,6 @@ void AddNodeToTail(LIST* list, char* val)
 	}
 }
 
-void AddNodeToPos(LIST* list, int pos, char* val)
-{
-	if (!list){ printf("List does not exist\n"); return; }
-	if (!list->HEAD){ AddNodeToHead(list, val); return; }
-}
-
 void PrintList(LIST* list)
 {
 	if (!list){ printf("List does not exist\n"); return; }
@@ -162,12 +182,19 @@ void DeleteNode(LIST* list, int ind)
 	int i;
 	NODE *next, *cur;
 	if (!list){ printf("List does not exist\n"); return; }
+	if (!list->HEAD){ printf("List is empty\n"); return; }
 	if (ind <= 0){ printf("\nIncorrect index! Could not delete NODE in \"%s\".\n", list->Name); return; }
 
 	next = list->HEAD;
-	if (ind <= list->Count / 2)
+	if (ind == 1)
 	{
-		for (i = 0; i < ind; i++)
+		next = next->Next;
+		free(list->HEAD);
+		list->HEAD = next;
+	}
+	else if (ind <= list->Count / 2)
+	{
+		for (i = 1; i < ind; i++)
 		{
 			next = next->Next;
 		}
@@ -179,7 +206,6 @@ void DeleteNode(LIST* list, int ind)
 		list->Count--;
 		return;
 	}
-
 	next = list->TAIL;
 	if (ind > list->Count / 2 && ind < list->Count)
 	{
@@ -195,7 +221,13 @@ void DeleteNode(LIST* list, int ind)
 		list->Count--;
 		return;
 	}
-	else if (ind==list->Count)
+	if (!list->TAIL){
+		free(list->HEAD);
+		list->HEAD = NULL;
+		list->Count--;
+		return;
+	}
+	if (ind==list->Count)
 	{
 		list->TAIL = list->TAIL->Prev;
 		free(list->TAIL->Next);
