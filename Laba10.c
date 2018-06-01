@@ -27,7 +27,7 @@ void AddNodeToHead(LIST* list, char* val);
 void AddNodeToTail(LIST* list, char* val);
 void AddNodeToPos(LIST* list, int pos, char* val);
 void EnterStr(LIST* list);
-void Task(LIST* list);
+void Task6(LIST* list);
 
 
 int main()
@@ -37,14 +37,14 @@ int main()
 
 	EnterStr(list1);
 	PrintList(list1);
-	Task(list1);
+	Task6(list1);
 	PrintList(list1);
 
 	DeleteList(list1);
 	return 0;
 }
 
-void Task(LIST* list)
+void Task6(LIST* list)
 {
 	int count;
 	printf("enter lenght of words to delete\n");
