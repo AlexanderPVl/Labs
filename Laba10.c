@@ -1,328 +1,199 @@
-#include <stdio.h>
-#include <string.h>
+#include "files.h"
 
-#define WRD_LN 30
-#define NAME_LN 10
-
-typedef struct NODE{
-	struct NODE* Prev;
-	struct NODE* Next;
-	char Str[WRD_LN];
-} NODE;
-
-typedef struct LIST{
-	NODE* HEAD;
-	NODE* TAIL;
-	char Name[NAME_LN];
-	int Count;
-} LIST;
-
-int NODE_SZ = (int)sizeof(NODE);
-
-LIST* MakeList(char* name);
-void DeleteList(LIST* list);
-void DeleteNode(LIST* list, int ind);
-void PrintList(LIST* list);
-void AddNodeToHead(LIST* list, char* val);
-void AddNodeToTail(LIST* list, char* val);
-void AddNodeToPos(LIST* list, int pos, char* val);
-void EnterStr(LIST* list);
-void Task6(LIST* list);
-void Task23(LIST* list, LIST* list2);
-
-
-int main()
+int CorrStrScan(char* Dest)
 {
-
-	LIST* list1 = MakeList("List1");
-	LIST* list2 = MakeList("List2");
-
-	EnterStr(list1);
-	PrintList(list1);
-	//Task23(list1, list2);
-	Task6(list1);
-	PrintList(list1);
-	PrintList(list2);
-
-	DeleteList(list1);
-	DeleteList(list2);
-	return 0;
+	size_t len = 0;
+	while (Dest[0] == '\n');
+	fgets(Dest, WRD_LN, stdin);
+	len = strlen(Dest);
+	if (len == WRD_LN - 1) while (getchar() != '\n');
+	if (len > 0 && Dest[len - 1] == '\n') Dest[--len] = 0;
+	if (len > 0 && Dest[len - 1] == '\r') Dest[--len] = 0;
+	return len;
 }
 
-void Task6(LIST* list)
+int CreateTxtFile()
 {
-	int count;
-	printf("enter lenght of words to delete\n");
-	scanf("%d", &count);
-	if (!list){ printf("List does not exist\n"); return; }
-	if (!list->HEAD){ printf("List \"%s\" is emmpty\n", list->Name); return; }
-	NODE* next = list->HEAD;
-	int i = 1;
-	while (next){
-		if (strlen(next->Str) == count)
-		{
-			next = next->Next;
-			DeleteNode(list, i--);
-		}
-		else
-			next = next->Next;
-		i++;
-	}
-}
+	FILE *f;
+	int len = 100;
+	char word[WRD_LN];
+	char c = '0', i = 0;
+	f = fopen(TXT_FL_NM, "r");
+	if (f){ printf("File already exists\n"); fclose(f); return 1; }
+	printf("File does not exist\nFill \"%s\" file", TXT_FL_NM);
+	f = fopen(TXT_FL_NM, "w");
 
-void Task23(LIST* list, LIST* list2)
-{
-	if (!list){ printf("List does not exist\n"); return; }
-	if (!list->HEAD){ printf("List \"%s\" is emmpty\n", list->Name); return; }
-	NODE* next = list->HEAD;
-	int i = 1;
-	while (next){
-		if (strlen(next->Str) % 2 == 0)
-		{
-			AddNodeToTail(list2, next->Str);
-			next = next->Next;
-			DeleteNode(list, i--);
-		}
-		else
-			next = next->Next;
-		i++;
-	}
-}
-
-void EnterStr(LIST* list)
-{
 	printf("Enter string:\n");
+	while ((c = getchar()) != '.')
+	{
+		if (c == ' '){
+			word[i++] = ' ';
+			word[i] = '\0';
+			fprintf(f, "%s", word);
+			i = 0;
+		}
+		else
+			word[i++] = c;
+		word[i++] = ' ';
+		word[i] = '\0';
+	}
+	word[i] = '\0';
+	fprintf(f, "%s", word);
+
+	fclose(f);
+	return;
+	/*printf("Enter text:\n");
 	char word[WRD_LN];
 	char c = '0', i = 0;
 	while ((c = getchar()) != '.')
 	{
 		if (c == ' '){
 			word[i] = '\0';
-			AddNodeToTail(list, word);
+			fprintf(f, "s", )
 			i = 0;
 		}
 		else
 			word[i++] = c;
 	}
 	word[i] = '\0';
-	AddNodeToTail(list, word);
+	AddNodeToTail(list, word);*/
 }
 
-LIST* MakeList(char* name)
+void AddNode(NODE** root, char* str)
 {
-	LIST* list = (LIST*)malloc(sizeof(LIST));
-	list->HEAD = NULL;
-	list->TAIL = NULL;
-	strcpy(list->Name, name);
-	list->Count = 0;
-	return list;
-}
-
-void DeleteList(LIST* list)
-{
-	if (!list){ printf("List does not exist\n"); return; }
-	if (!list->HEAD){ free(list); return; }
-	NODE* next = list->HEAD->Next;
-	while (next != NULL)
+	if (!(*root))
 	{
-		free(next->Prev);
-		next = next->Next;
-	}
-	free(list);
-}
-
-void AddNodeToHead(LIST* list, char* val)
-{
-	if (!list){ printf("List does not exist\n"); return; }
-	NODE* head = (NODE*)malloc(NODE_SZ);
-	list->Count++;
-	if (!list->HEAD)
-	{
-		head->Next = list->TAIL;
-		head->Prev = NULL;
-		list->HEAD = head;
-		strcpy(list->HEAD->Str, val);
+		(*root) = (NODE*)malloc(sizeof(NODE));
+		(*root)->Left = NULL;
+		(*root)->Right = NULL;
+		strcpy((*root)->Str, str);
+		(*root)->Count = 1;
 		return;
 	}
-	if (!list->TAIL)
+	if (_stricmp((*root)->Str, str) < 0)
 	{
-		head->Next = NULL;
-		head->Prev = list->HEAD;
-		strcpy(head->Str, list->HEAD->Str);
-		list->TAIL = head;
-		list->HEAD->Next = head;
-		strcpy(list->HEAD->Str, val);
-		return;
+		AddNode(&((*root)->Right), str); return;
 	}
-	head->Next = list->HEAD->Next;
-	head->Prev = list->HEAD;
-	strcpy(head->Str, list->HEAD->Str);
-	list->HEAD->Next->Prev = head;
-	list->HEAD->Prev = NULL;
-	list->HEAD->Next = head;
-	strcpy(list->HEAD->Str, val);
-}
-
-void AddNodeToTail(LIST* list, char* val)
-{
-	if (!list){ printf("List does not exist\n"); return; }
-	if (!list->HEAD){ AddNodeToHead(list, val); return; }
-	NODE* new = (NODE*)malloc(NODE_SZ);
-	list->Count++;
-	if (!list->TAIL)
+	if (_stricmp((*root)->Str, str) > 0)
 	{
-		new->Next = NULL;
-		new->Prev = list->HEAD;
-		list->HEAD->Next = new;
-		list->TAIL = new;
-		strcpy(new->Str, val);
-		return;
+		AddNode(&((*root)->Left), str); return;
 	}
-	else
+	if (!_stricmp((*root)->Str, str))
 	{
-		new->Prev = list->TAIL->Prev;
-		new->Next = list->TAIL;
-		list->TAIL->Prev->Next = new;
-		list->TAIL->Prev = new;
-		list->TAIL->Next = NULL;
-		strcpy(new->Str, list->TAIL->Str);
-		strcpy(list->TAIL->Str, val);
+		(*root)->Count++; return;
 	}
 }
 
-void PrintList(LIST* list)
+NODE* MakeConcordance()
 {
-	if (!list){ printf("List does not exist\n"); return; }
-	if (!list->HEAD){ printf("List \"%s\" is emmpty\n", list->Name); return; }
-	NODE* next = list->HEAD;
-	printf("\n%s: ", list->Name);
-	while (next->Next != NULL)
+	FILE *f = fopen(TXT_FL_NM, "r");
+	NODE* root = NULL;
+	int count, fl = 0;
+	char c = 0, word[WRD_LN];
+	while (count = fscanf(f, "%s", word))
 	{
-		printf("%s ", next->Str);
-		next = next->Next;
+		fl += count;
+		if (word[strlen(word) - 1] == '.')word[strlen(word) - 1] = '\0';
+		AddNode(&root, word);
+		if (feof(f))break;
 	}
-	printf("%s. Number of elements = %d", next->Str, list->Count);
-	printf("\n");
+	if (fl == -1){ printf("%d", fl); return NULL; }
+	return root;
 }
 
-void DeleteNode(LIST* list, int ind)
+void Pre_Order(NODE* root) // прямой обход
 {
-	int i;
-	NODE *next, *cur;
-	if (!list){ printf("List does not exist\n"); return; }
-	if (!list->HEAD){ printf("List is empty\n"); return; }
-	if (ind <= 0){ printf("\nIncorrect index! Could not delete NODE in \"%s\".\n", list->Name); return; }
-	if (ind > list->Count){ printf("\nIncorrect index! Could not delete NODE in \"%s\".\n", list->Name); return; }
+	if (root)
+	{
+		printf("%s : %d\n", root->Str, root->Count);
+		Pre_Order(root->Left);
+		Pre_Order(root->Right);
+	}
+}
 
-	if (list->Count == 1)
+void In_Order(NODE* root) // симметричный обход
+{
+	if (root)
 	{
-		free(list->HEAD);
-		list->HEAD = NULL;
-		list->Count--;
-		return;
+		In_Order(root->Left);
+		printf("%s : %d\n", root->Str, root->Count);
+		In_Order(root->Right);
 	}
-	if (ind == 1)
-	{
-		if (list->Count == 2)
-		{
-			next = list->HEAD;
-			list->HEAD = list->TAIL;
-			list->HEAD->Prev = NULL;
-			free(next);
-			list->TAIL = NULL;
-			list->Count--;
-			return;
-		}
-		next = list->HEAD->Next;
-		free(list->HEAD);
-		list->HEAD = next;
-		list->HEAD->Prev = NULL;
-		list->Count--;
-		return;
-	}
-	if (ind == list->Count)
-	{
-		if (list->Count == 2)
-		{
-			free(list->TAIL);
-			list->TAIL = NULL;
-			list->HEAD->Next = NULL;
-			list->Count--;
-			return;
-		}
-		else
-		{
-			next = list->TAIL->Prev;
-			free(list->TAIL);
-			list->TAIL = next;
-			next->Next = NULL;
-			list->Count--;
-			return;
-		}
-	}
-	else
-	{
-		next = list->HEAD;
-		for (i = 1; i < ind; i++)
-		{
-			next = next->Next;
-		}
-		cur = next->Prev;
-		cur->Next = next->Next;
-		cur = next->Next;
-		cur->Prev = next->Prev;
-		free(next);
-		list->Count--;
-		return;
-	}
+}
 
-	/*if (ind == 1)
+void Post_Order(NODE* root) // обратный обход
+{
+	if (root)
 	{
-		next = next->Next;
-		free(list->HEAD);
-		list->HEAD = next;
+		Post_Order(root->Left);
+		Post_Order(root->Right);
+		printf("%s : %d\n", root->Str, root->Count);
 	}
-	else if (ind <= list->Count / 2)
-	{
-		for (i = 1; i < ind; i++)
-		{
-			next = next->Next;
-		}
-		cur = next->Prev;
-		cur->Next = next->Next;
-		cur = next->Next;
-		cur->Prev = next->Prev;
-		free(next);
-		list->Count--;
-		return;
-	}
-	next = list->TAIL;
-	if (ind > list->Count / 2 && ind < list->Count)
-	{
-		for (i = list->Count - ind; i > 0; i--)
-		{
-			next = next->Prev;
-		}
-		cur = next->Prev;
-		cur->Next = next->Next;
-		cur = next->Next;
-		cur->Prev = next->Prev;
-		free(next);
-		list->Count--;
-		return;
-	}
-	if (!list->TAIL){
-		free(list->HEAD);
-		list->HEAD = NULL;
-		list->Count--;
-		return;
-	}
-	if (ind==list->Count)
-	{
-		list->TAIL = list->TAIL->Prev;
-		free(list->TAIL->Next);
-		list->TAIL->Next = NULL;
-		list->Count--;
-	}*/
+}
 
+void Level_Order(NODE* root) //горизонтальный обход
+{
+	if (!root)return;
+	int Cnt = 1, i, ind = 0;
+	NODE** Queue = (NODE**)malloc(sizeof(NODE*));
+	NODE* Buf;
+	Queue[0] = root;
+
+	while (Cnt){
+		if (ind = Cnt)ind = 0;
+		Buf = Queue[ind++];
+		printf("%s : %d\n", Buf->Str, Buf->Count);
+		Queue = (NODE**)realloc(Queue, Cnt - 1);
+		Cnt--;
+		if (Buf->Left)
+		{
+			Cnt++;
+			Queue = (NODE**)realloc(Queue, Cnt);
+			for (i = Cnt - 1; i > 0; i--)
+				Queue[i + 1] = Queue[i];
+			Queue[0] = Buf->Left;
+		}
+		if (Buf->Right)
+		{
+			Cnt++;
+			Queue = (NODE**)realloc(Queue, Cnt);
+			for (i = Cnt - 1; i > 0; i--)
+				Queue[i + 1] = Queue[i];
+			Queue[0] = Buf->Right;
+		}
+	}
+	free(Queue);
+}
+
+int CountSubtree(NODE* root, int* count)
+{
+	if (!root)return;
+	(*count)++;
+	if (root->Left)CountSubtree(root->Left, count);
+	if (root->Right)CountSubtree(root->Right, count);
+}
+
+int Task(NODE* root)
+{
+	if (!root){ printf("Tree is empty\n"); return 0; }
+	int Lcnt = 0, Rcnt = 0;
+	if (!root){ printf("Tree is empty\n"); return; }
+	if (!(root->Left || root->Right)){ printf("Subtrees are empty\n"); return; }
+	CountSubtree(root->Left, &Lcnt);
+	CountSubtree(root->Right, &Rcnt);
+	if (Lcnt > Rcnt)
+		printf("Left subtree is bigger\n");
+	else if (Lcnt < Rcnt)
+		printf("Right subtree is bigger\n");
+	else if (Lcnt == Rcnt)
+		printf("Subtrees size is equall\n");
+}
+
+void DelTree(NODE* root)
+{
+	if (root){
+		DelTree(root->Left);
+		DelTree(root->Right);
+		free(root);
+	}
 }
