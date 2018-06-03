@@ -23,7 +23,14 @@ typedef struct NODE
 } NODE;
 
 int CorrStrScan(char* Dest);
-void CreateTxtFile();
+int CreateTxtFile();
 NODE* MakeConcordance();
 void AddNode(NODE* head, char* Str);
-void PrintConcordanceLeft(NODE* head);
+void Pre_Order(NODE* head);
+void In_Order(NODE* head);
+void Post_Order(NODE* head);
+void Level_Order(NODE* root);
+void DelTree(NODE* root);
+int Task(NODE* root);
+void PushBask(NODE*** Queue, NODE* new, int* cnt);
+int CountSubtree(NODE* root, int* count);
