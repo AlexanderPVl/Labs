@@ -122,28 +122,32 @@ void Level_Order(NODE* root) //горизонтальный обход
 	NODE** Queue = (NODE**)malloc(sizeof(NODE*));
 	NODE* Buf;
 	Buf = Queue[0] = root;
-	while (Buf && Cnt)
+	while (Buf)
 	{
 		printf("%s : %d\n", Buf->Str, Buf->Count);
 		Cnt--;
- 		Queue = (NODE**)realloc(Queue, Cnt);
+ 		Queue = (NODE**)realloc(Queue, Cnt*sizeof(NODE*));
+		if (!Cnt)Queue = NULL;
 		if (Buf->Left)
 		{
 			Cnt++;
 			Queue = (NODE**)realloc(Queue, Cnt*sizeof(NODE*));
-			for (i = Cnt - 1; i >= 0; i--)
+			for (i = Cnt - 2; i >= 0; i--)
 				Queue[i+1] = Queue[i];
 			Queue[0] = Buf->Left;
 		}
 		if (Buf->Right)
 		{
 			Cnt++;
-			Queue = (NODE**)realloc(Queue, Cnt*sizeof(NODE));
-			for (i = Cnt - 1; i >= 0; i--)
+			Queue = (NODE**)realloc(Queue, Cnt*sizeof(NODE*));
+			for (i = Cnt - 2; i >= 0; i--)
 				Queue[i + 1] = Queue[i];
 			Queue[0] = Buf->Right;
 		}
-		Buf = Queue[Cnt - 1];
+		if (Cnt)
+			Buf = Queue[Cnt - 1];
+		else
+			Buf = NULL;
 	}
 	free(Queue);
 }
