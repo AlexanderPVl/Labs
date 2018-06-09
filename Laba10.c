@@ -27,7 +27,6 @@ void AddNodeToHead(LIST* list, char* val);
 void AddNodeToTail(LIST* list, char* val);
 void AddNodeToPos(LIST* list, int pos, char* val);
 void EnterStr(LIST* list);
-void Task6(LIST* list);
 void Task23(LIST* list, LIST* list2);
 
 
@@ -40,7 +39,6 @@ int main()
 	EnterStr(list1);
 	PrintList(list1);
 	//Task23(list1, list2);
-	Task6(list1);
 	PrintList(list1);
 	PrintList(list2);
 
@@ -49,26 +47,6 @@ int main()
 	return 0;
 }
 
-void Task6(LIST* list)
-{
-	int count;
-	printf("enter lenght of words to delete\n");
-	scanf("%d", &count);
-	if (!list){ printf("List does not exist\n"); return; }
-	if (!list->HEAD){ printf("List \"%s\" is emmpty\n", list->Name); return; }
-	NODE* next = list->HEAD;
-	int i = 1;
-	while (next){
-		if (strlen(next->Str) == count)
-		{
-			next = next->Next;
-			DeleteNode(list, i--);
-		}
-		else
-			next = next->Next;
-		i++;
-	}
-}
 
 void Task23(LIST* list, LIST* list2)
 {
